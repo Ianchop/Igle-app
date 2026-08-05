@@ -129,7 +129,7 @@
         <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex justify-between items-start">
           <div>
             <p class="text-xs font-medium text-slate-400 mb-2">Miembros Activos</p>
-            <h2 id="dash-miembros-cnt" class="text-3xl font-bold text-slate-800">1</h2>
+            <h2 id="dash-miembros-cnt" class="text-3xl font-bold text-slate-800">0</h2>
             <p class="text-[11px] text-slate-400 mt-2">Ver la mejora de mayor impacto</p>
           </div>
           <div class="p-2.5 bg-blue-50 text-blue-600 rounded-xl">
@@ -234,37 +234,48 @@
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center gap-4">
           <div class="p-3 bg-blue-50 text-blue-600 rounded-xl"><i data-lucide="users" class="w-6 h-6"></i></div>
-          <div><p class="text-xs text-slate-400">Miembros Activos</p><h3 id="stat-miembros-activos" class="text-2xl font-bold text-slate-800">1</h3></div>
+          <div><p class="text-xs text-slate-400">Miembros Activos</p><h3 id="stat-miembros-activos" class="text-2xl font-bold text-slate-800">0</h3></div>
         </div>
         <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center gap-4">
           <div class="p-3 bg-emerald-50 text-emerald-600 rounded-xl"><i data-lucide="users-round" class="w-6 h-6"></i></div>
-          <div><p class="text-xs text-slate-400">Grupos Activos</p><h3 class="text-2xl font-bold text-slate-800">1</h3></div>
+          <div><p class="text-xs text-slate-400">Grupos Activos</p><h3 id="stat-grupos-activos" class="text-2xl font-bold text-slate-800">0</h3></div>
         </div>
         <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center gap-4">
           <div class="p-3 bg-amber-50 text-amber-600 rounded-xl"><i data-lucide="droplet" class="w-6 h-6"></i></div>
-          <div><p class="text-xs text-slate-400">Miembros Bautizados</p><h3 class="text-2xl font-bold text-slate-800">1</h3></div>
+          <div><p class="text-xs text-slate-400">Miembros Bautizados</p><h3 class="text-2xl font-bold text-slate-800">0</h3></div>
         </div>
       </div>
 
       <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
         <div class="flex flex-wrap justify-between items-center gap-4 mb-6">
-          <div class="flex gap-2 flex-1 max-w-xl">
+          <div class="flex gap-2 flex-1 max-w-2xl">
             <input type="text" id="input-buscar-miembro" onkeyup="filtrarMiembros()" placeholder="Buscar por nombre, teléfono o email..." class="border border-slate-200 rounded-xl px-4 py-2 text-sm w-full focus:outline-none focus:ring-2 focus:ring-blue-600">
-            <select class="border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-600">
-              <option>Todas las edades</option>
-              <option>Niños</option>
-              <option>Jóvenes</option>
-              <option>Adultos</option>
+            
+            <!-- EDADES EXPANDIDAS -->
+            <select id="select-filtro-edad" onchange="filtrarMiembros()" class="border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-600">
+              <option value="">Todas las edades</option>
+              <option value="Niños">Niños</option>
+              <option value="Pre-Ados">Pre-Ados</option>
+              <option value="Adolescentes">Adolescentes</option>
+              <option value="Jóvenes">Jóvenes</option>
+              <option value="Jóvenes +">Jóvenes +</option>
+              <option value="Adultos">Adultos</option>
+              <option value="Ancianos">Ancianos</option>
             </select>
-            <select class="border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-600">
-              <option>Todos los grupos</option>
-              <option>Líderes</option>
-              <option>Célula Norte</option>
+
+            <!-- GRUPOS DINÁMICOS -->
+            <select id="select-filtro-grupo" onchange="filtrarMiembros()" class="border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-600">
+              <option value="">Todos los grupos</option>
             </select>
           </div>
+
           <div class="flex gap-2">
-            <button class="border border-slate-200 text-slate-600 text-sm font-medium px-3 py-2 rounded-xl flex items-center gap-2 hover:bg-slate-50"><i data-lucide="download" class="w-4 h-4"></i> Exportar</button>
-            <button onclick="mostrarFormularioNuevo()" class="bg-blue-600 text-white text-sm font-semibold px-4 py-2 rounded-xl flex items-center gap-2 hover:bg-blue-700 transition"><i data-lucide="plus" class="w-4 h-4"></i> Nuevo Miembro</button>
+            <button onclick="mostrarModalCrearGrupo()" class="border border-blue-200 text-blue-600 hover:bg-blue-50 text-sm font-semibold px-3.5 py-2 rounded-xl flex items-center gap-2 transition">
+              <i data-lucide="folder-plus" class="w-4 h-4"></i> Crear Grupo
+            </button>
+            <button onclick="mostrarFormularioNuevo()" class="bg-blue-600 text-white text-sm font-semibold px-4 py-2 rounded-xl flex items-center gap-2 hover:bg-blue-700 transition">
+              <i data-lucide="plus" class="w-4 h-4"></i> Nuevo Miembro
+            </button>
           </div>
         </div>
 
@@ -273,7 +284,7 @@
             <thead>
               <tr class="border-b border-slate-100 text-slate-400">
                 <th class="py-3 px-4 font-medium">Nombre Completo</th>
-                <th class="py-3 px-4 font-medium">Edad / Sexo</th>
+                <th class="py-3 px-4 font-medium">Categoría Edad</th>
                 <th class="py-3 px-4 font-medium">Barrio</th>
                 <th class="py-3 px-4 font-medium">F. Ingreso</th>
                 <th class="py-3 px-4 font-medium">Grupo / Célula</th>
@@ -282,7 +293,7 @@
               </tr>
             </thead>
             <tbody id="tabla-miembros-body" class="divide-y divide-slate-100">
-              <!-- Se puebla dinámicamente -->
+              <!-- Carga dinámicamente -->
             </tbody>
           </table>
         </div>
@@ -302,8 +313,6 @@
       </div>
 
       <div class="bg-white p-8 rounded-2xl border border-slate-200/80 shadow-sm max-w-4xl space-y-8">
-        
-        <!-- FOTO DE PERFIL -->
         <div>
           <p class="text-xs font-bold text-slate-400 tracking-wider uppercase mb-3">Foto de Perfil</p>
           <div class="flex items-center gap-5">
@@ -321,8 +330,6 @@
         </div>
 
         <form id="form-nuevo-miembro" onsubmit="guardarNuevoMiembro(event)" class="space-y-8">
-          
-          <!-- INFORMACIÓN PERSONAL -->
           <div class="space-y-4">
             <p class="text-xs font-bold text-slate-400 tracking-wider uppercase border-b border-slate-100 pb-2">Información Personal</p>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -350,8 +357,8 @@
                 <input type="date" id="input-nacimiento" onchange="calcularEdad()" class="w-full border border-slate-200 rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600 bg-slate-50/50 text-slate-700">
               </div>
               <div>
-                <label class="block text-xs font-semibold text-slate-700 mb-1">Edad (calculada)</label>
-                <input type="text" id="input-edad" readonly placeholder="Se calcula desde la fecha" class="w-full border border-slate-200 rounded-xl px-3.5 py-2 text-sm bg-slate-100 text-slate-500 cursor-not-allowed">
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Categoría Edad</label>
+                <input type="text" id="input-categoria-edad" readonly placeholder="Se asigna según fecha" class="w-full border border-slate-200 rounded-xl px-3.5 py-2 text-sm bg-slate-100 text-slate-600 font-semibold cursor-not-allowed">
               </div>
               <div>
                 <label class="block text-xs font-semibold text-slate-700 mb-1">Barrio</label>
@@ -360,7 +367,6 @@
             </div>
           </div>
 
-          <!-- INFORMACIÓN DE CONTACTO -->
           <div class="space-y-4">
             <p class="text-xs font-bold text-slate-400 tracking-wider uppercase border-b border-slate-100 pb-2">Información de Contacto</p>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -379,11 +385,9 @@
                 <i data-lucide="map-pin" class="w-4 h-4 text-slate-400 absolute left-3.5 top-3"></i>
                 <input type="text" id="input-direccion" placeholder="Escribe y selecciona una dirección de Google Maps" class="w-full border border-slate-200 rounded-xl pl-10 pr-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600 bg-slate-50/50">
               </div>
-              <p class="text-[11px] text-slate-400 mt-1">Selecciona una sugerencia para guardar la ubicación exacta y poder analizar dónde está tu comunidad.</p>
             </div>
           </div>
 
-          <!-- INFORMACIÓN DE IGLESIA -->
           <div class="space-y-4">
             <p class="text-xs font-bold text-slate-400 tracking-wider uppercase border-b border-slate-100 pb-2">Información de Iglesia</p>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -392,18 +396,14 @@
                 <input type="date" id="input-ingreso" value="2026-08-05" class="w-full border border-slate-200 rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600 bg-slate-50/50 text-slate-700">
               </div>
               <div>
-                <label class="block text-xs font-semibold text-slate-700 mb-1">Grupo</label>
-                <select id="input-grupo" class="w-full border border-slate-200 rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600 bg-slate-50/50 text-slate-700">
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Grupo / Célula</label>
+                <select id="input-grupo-form" class="w-full border border-slate-200 rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600 bg-slate-50/50 text-slate-700">
                   <option value="Sin grupo">Sin grupo</option>
-                  <option value="Líderes">Líderes</option>
-                  <option value="Célula Norte">Célula Norte</option>
-                  <option value="Célula Jóvenes">Célula Jóvenes</option>
                 </select>
               </div>
             </div>
           </div>
 
-          <!-- BOTONES DE ACCIÓN -->
           <div class="flex justify-end gap-3 pt-4 border-t border-slate-100">
             <button type="button" onclick="ocultarFormularioNuevo()" class="border border-slate-200 hover:bg-slate-50 text-slate-700 font-semibold px-5 py-2.5 rounded-xl text-sm transition">
               Cancelar
@@ -412,8 +412,25 @@
               <i data-lucide="check" class="w-4 h-4"></i> Guardar Miembro
             </button>
           </div>
-
         </form>
+      </div>
+    </div>
+
+    <!-- MODAL POPUP PARA CREAR NUEVO GRUPO -->
+    <div id="modal-crear-grupo" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden flex items-center justify-center z-50 p-4">
+      <div class="bg-white rounded-2xl shadow-xl max-w-md w-full p-6 space-y-5">
+        <div class="flex justify-between items-center">
+          <h3 class="text-lg font-bold text-slate-800">Crear Nuevo Grupo / Célula</h3>
+          <button onclick="cerrarModalCrearGrupo()" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Nombre del Grupo *</label>
+          <input type="text" id="input-nombre-grupo-nuevo" placeholder="Ej: Célula Jóvenes, Matrimonios, etc." class="w-full border border-slate-200 rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600">
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button onclick="cerrarModalCrearGrupo()" class="border border-slate-200 text-slate-600 px-4 py-2 rounded-xl text-sm font-medium">Cancelar</button>
+          <button onclick="guardarGrupoNuevo()" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-xl text-sm font-semibold">Guardar Grupo</button>
+        </div>
       </div>
     </div>
 
@@ -430,36 +447,23 @@
 
   </main>
 
-  <!-- LÓGICA JAVASCRIPT CON ALMACENAMIENTO DINÁMICO (LOCALSTORAGE) -->
   <script>
     lucide.createIcons();
 
-    // BASE DE DATOS LOCAL
-    let miembros = JSON.parse(localStorage.getItem('miiglesia_miembros')) || [
-      {
-        nombre: "Osvaldo",
-        apellido: "López",
-        sexo: "Masculino",
-        nacimiento: "1988-05-12",
-        edad: "38 años",
-        barrio: "Centro",
-        telefono: "2983-345988",
-        email: "osvaldo@email.com",
-        direccion: "Calle San Martín 123",
-        ingreso: "2026-07-24",
-        grupo: "Sin grupo",
-        foto: null
-      }
-    ];
-
+    // ESTADO
+    let miembros = JSON.parse(localStorage.getItem('miiglesia_miembros')) || [];
+    let grupos = JSON.parse(localStorage.getItem('miiglesia_grupos')) || ['Líderes', 'Célula Norte', 'Célula Jóvenes'];
     let tempFoto = null;
 
     function guardarMemoria() {
       localStorage.setItem('miiglesia_miembros', JSON.stringify(miembros));
+      localStorage.setItem('miiglesia_grupos', JSON.stringify(grupos));
+      renderGruposDropdowns();
       renderTabla();
       actualizarContadores();
     }
 
+    // CATEGORIZACIÓN AUTOMÁTICA DE EDADES
     function calcularEdad() {
       const nac = document.getElementById('input-nacimiento').value;
       if (!nac) return;
@@ -467,9 +471,20 @@
       const diff = Date.now() - dob.getTime();
       const ageDate = new Date(diff);
       const edadVal = Math.abs(ageDate.getUTCFullYear() - 1970);
-      document.getElementById('input-edad').value = `${edadVal} años`;
+      
+      let cat = "Adultos";
+      if (edadVal <= 11) cat = "Niños";
+      else if (edadVal <= 14) cat = "Pre-Ados";
+      else if (edadVal <= 17) cat = "Adolescentes";
+      else if (edadVal <= 25) cat = "Jóvenes";
+      else if (edadVal <= 35) cat = "Jóvenes +";
+      else if (edadVal <= 64) cat = "Adultos";
+      else cat = "Ancianos";
+
+      document.getElementById('input-categoria-edad').value = `${cat} (${edadVal} años)`;
     }
 
+    // PREVIEW FOTO
     function previewImage(event) {
       const file = event.target.files[0];
       if (file) {
@@ -482,6 +497,46 @@
       }
     }
 
+    // MANEJO DE GRUPOS DINÁMICOS
+    function renderGruposDropdowns() {
+      const selFiltro = document.getElementById('select-filtro-grupo');
+      const selForm = document.getElementById('input-grupo-form');
+      
+      const valFiltro = selFiltro.value;
+      const valForm = selForm.value;
+
+      selFiltro.innerHTML = '<option value="">Todos los grupos</option>';
+      selForm.innerHTML = '<option value="Sin grupo">Sin grupo</option>';
+
+      grupos.forEach(g => {
+        selFiltro.innerHTML += `<option value="${g}">${g}</option>`;
+        selForm.innerHTML += `<option value="${g}">${g}</option>`;
+      });
+
+      selFiltro.value = valFiltro;
+      selForm.value = valForm;
+    }
+
+    function mostrarModalCrearGrupo() {
+      document.getElementById('modal-crear-grupo').classList.remove('hidden');
+    }
+
+    function cerrarModalCrearGrupo() {
+      document.getElementById('modal-crear-grupo').classList.add('hidden');
+      document.getElementById('input-nombre-grupo-nuevo').value = '';
+    }
+
+    function guardarGrupoNuevo() {
+      const nombre = document.getElementById('input-nombre-grupo-nuevo').value.trim();
+      if (nombre && !grupos.includes(nombre)) {
+        grupos.push(nombre);
+        guardarMemoria();
+        cerrarModalCrearGrupo();
+        alert(`¡Grupo "${nombre}" creado exitosamente!`);
+      }
+    }
+
+    // CAMBIAR PESTAÑAS
     function switchTab(tabName) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
       
@@ -529,13 +584,13 @@
         apellido: document.getElementById('input-apellido').value,
         sexo: document.getElementById('input-sexo').value,
         nacimiento: document.getElementById('input-nacimiento').value,
-        edad: document.getElementById('input-edad').value || '-',
+        categoriaEdad: document.getElementById('input-categoria-edad').value || 'Adultos',
         barrio: document.getElementById('input-barrio').value || '-',
         telefono: document.getElementById('input-telefono').value || '-',
         email: document.getElementById('input-email').value || '-',
         direccion: document.getElementById('input-direccion').value || '-',
         ingreso: document.getElementById('input-ingreso').value,
-        grupo: document.getElementById('input-grupo').value,
+        grupo: document.getElementById('input-grupo-form').value,
         foto: tempFoto
       };
 
@@ -563,6 +618,9 @@
 
         const row = document.createElement('tr');
         row.className = "hover:bg-slate-50/80 transition";
+        row.dataset.edad = m.categoriaEdad;
+        row.dataset.grupo = m.grupo;
+
         row.innerHTML = `
           <td class="py-3.5 px-4 font-medium text-slate-800 flex items-center gap-3">
             ${avatarHTML}
@@ -571,7 +629,7 @@
               <p class="text-[11px] text-slate-400">${m.email} • ${m.telefono}</p>
             </div>
           </td>
-          <td class="py-3.5 px-4 text-slate-600 text-xs">${m.edad} (${m.sexo})</td>
+          <td class="py-3.5 px-4 text-slate-600 text-xs font-medium">${m.categoriaEdad} (${m.sexo})</td>
           <td class="py-3.5 px-4 text-slate-500 text-xs">${m.barrio}</td>
           <td class="py-3.5 px-4 text-slate-500 text-xs">${m.ingreso}</td>
           <td class="py-3.5 px-4 text-slate-500 text-xs font-medium"><span class="bg-slate-100 text-slate-700 px-2.5 py-1 rounded-lg">${m.grupo}</span></td>
@@ -591,21 +649,32 @@
     }
 
     function filtrarMiembros() {
-      const query = document.getElementById('input-buscar-miembro').value.toLowerCase();
+      const q = document.getElementById('input-buscar-miembro').value.toLowerCase();
+      const catEdad = document.getElementById('select-filtro-edad').value;
+      const gSel = document.getElementById('select-filtro-grupo').value;
+
       const rows = document.querySelectorAll('#tabla-miembros-body tr');
       rows.forEach(row => {
         const text = row.innerText.toLowerCase();
-        row.style.display = text.includes(query) ? '' : 'none';
+        const rowEdad = row.dataset.edad || '';
+        const rowGrupo = row.dataset.grupo || '';
+
+        const matchQ = text.includes(q);
+        const matchEdad = catEdad === '' || rowEdad.includes(catEdad);
+        const matchGrupo = gSel === '' || rowGrupo === gSel;
+
+        row.style.display = (matchQ && matchEdad && matchGrupo) ? '' : 'none';
       });
     }
 
     function actualizarContadores() {
-      const cnt = miembros.length;
-      document.getElementById('stat-miembros-activos').innerText = cnt;
-      document.getElementById('dash-miembros-cnt').innerText = cnt;
+      document.getElementById('stat-miembros-activos').innerText = miembros.length;
+      document.getElementById('dash-miembros-cnt').innerText = miembros.length;
+      document.getElementById('stat-grupos-activos').innerText = grupos.length;
     }
 
     window.onload = function() {
+      renderGruposDropdowns();
       renderTabla();
       actualizarContadores();
 
