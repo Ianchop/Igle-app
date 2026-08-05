@@ -68,7 +68,7 @@
           <input type="password" id="reg-password" required placeholder="Crea una contraseña segura" class="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600 bg-slate-50/50">
         </div>
         <p class="text-[11px] text-amber-600 bg-amber-50 p-2.5 rounded-xl border border-amber-200">
-          ⚠️ Se enviará una solicitud de autorización por correo real a psocikian@gmail.com.
+          ⚠️ Se enviará una solicitud de autorización por correo a psocikian@gmail.com.
         </p>
         <button type="submit" id="btn-submit-register" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 rounded-xl text-sm transition shadow-sm">
           Enviar Solicitud al Anfitrión
@@ -497,6 +497,29 @@
       actualizarInterfazUsuario();
     }
 
+    // PROCESADOR AUTOMÁTICO DE ENLACES DE APROBACIÓN DESDE EL EMAIL
+    function procesarAccionUrl() {
+      const params = new URLSearchParams(window.location.search);
+      const action = params.get('action');
+      const emailTarget = params.get('email');
+
+      if (action && emailTarget) {
+        const user = usuarios.find(u => u.email === emailTarget.toLowerCase());
+        if (user) {
+          if (action === 'approve') {
+            user.estado = 'aprobado';
+            alert(`🟢 ¡Éxito! La cuenta de ${user.nombre} (${user.email}) ha sido APROBADA. Ya puede iniciar sesión.`);
+          } else if (action === 'reject') {
+            user.estado = 'rechazado';
+            alert(`🔴 La cuenta de ${user.nombre} (${user.email}) ha sido RECHAZADA. No podrá iniciar sesión.`);
+          }
+          guardarMemoria();
+          // Limpiar la URL para que no vuelva a procesarse al recargar
+          window.history.replaceState({}, document.title, window.location.pathname);
+        }
+      }
+    }
+
     function toggleAuthTab(tab) {
       if(tab === 'login') {
         document.getElementById('form-login').classList.remove('hidden');
@@ -536,17 +559,16 @@
       btnSubmit.disabled = true;
 
       try {
-        const response = await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+        await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
           to_email: HOST_EMAIL,
           applicant_name: nombre,
           applicant_email: email,
           message: `El usuario ${nombre} (${email}) ha solicitado crear una cuenta en casadedios.app.`
         });
-        console.log("Éxito al enviar email:", response);
-        alert(`¡Solicitud enviada! Se despachó un correo electrónico REAL a ${HOST_EMAIL}.`);
+        alert(`¡Solicitud enviada! Se despachó un correo electrónico con botones de Aprobación a ${HOST_EMAIL}.`);
       } catch (err) {
         console.error("Error al enviar con EmailJS:", err);
-        alert(`La solicitud se guardó internamente. Error técnico con EmailJS: ` + JSON.stringify(err));
+        alert(`La solicitud se guardó en el sistema. Error al enviar email: ` + JSON.stringify(err));
       }
 
       btnSubmit.innerText = "Enviar Solicitud al Anfitrión";
@@ -568,12 +590,12 @@
       }
 
       if(user.estado === 'pendiente') {
-        alert('Tu cuenta está PENDIENTE de autorización por el anfitrión (psocikian@gmail.com).');
+        alert('🔒 Tu cuenta está PENDIENTE de autorización por el anfitrión (psocikian@gmail.com). Revisa si aún no ha respondido la solicitud.');
         return;
       }
 
       if(user.estado === 'rechazado') {
-        alert('Tu solicitud de acceso fue rechazada por el anfitrión.');
+        alert('🚫 Tu solicitud de acceso fue rechazada por el anfitrión.');
         return;
       }
 
@@ -920,6 +942,7 @@
     }
 
     window.onload = function() {
+      procesarAccionUrl();
       evaluarEstadoAcceso();
       renderGruposDropdowns();
       renderTabla();
@@ -954,5 +977,4 @@
   </script>
 </body>
 </html>
-
 
