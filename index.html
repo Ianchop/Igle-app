@@ -3,13 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>miiglesia.app - Panel de Control</title>
+  <title>miiglesia.app - Plataforma Integral de Gestión Eclesial</title>
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
-  <!-- Chart.js para gráficos reales -->
+  <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    .tab-content { animation: fadeIn 0.2s ease-in-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: translateY(0); } }
+  </style>
 </head>
 <body class="bg-slate-50 font-sans flex h-screen overflow-hidden text-slate-800">
 
@@ -25,7 +32,7 @@
       </div>
 
       <!-- MENÚ DE NAVEGACIÓN -->
-      <nav class="space-y-1" id="main-nav">
+      <nav class="space-y-1 custom-scrollbar max-h-[calc(100vh-220px)] overflow-y-auto pr-1" id="main-nav">
         <button onclick="switchTab('dashboard')" id="nav-dashboard" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl bg-blue-600 text-white font-medium text-sm transition">
           <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
           Panel de Control
@@ -40,25 +47,41 @@
         </button>
         <button onclick="switchTab('grupos')" id="nav-grupos" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 font-medium text-sm transition">
           <i data-lucide="users-round" class="w-5 h-5"></i>
-          Grupos
+          Grupos Pequeños
         </button>
-        <button onclick="switchTab('cursos')" id="nav-cursos" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 font-medium text-sm transition">
-          <i data-lucide="graduation-cap" class="w-5 h-5"></i>
-          Cursos
+        <button onclick="switchTab('finanzas')" id="nav-finanzas" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 font-medium text-sm transition">
+          <i data-lucide="dollar-sign" class="w-5 h-5"></i>
+          Finanzas
+        </button>
+        <button onclick="switchTab('ministerios')" id="nav-ministerios" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 font-medium text-sm transition">
+          <i data-lucide="hand-heart" class="w-5 h-5"></i>
+          Ministerios
+        </button>
+        <button onclick="switchTab('comunicaciones')" id="nav-comunicaciones" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 font-medium text-sm transition">
+          <i data-lucide="message-square" class="w-5 h-5"></i>
+          Comunicación
         </button>
         <button onclick="switchTab('eventos')" id="nav-eventos" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 font-medium text-sm transition">
           <i data-lucide="calendar" class="w-5 h-5"></i>
           Eventos
         </button>
+        <button onclick="switchTab('cursos')" id="nav-cursos" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 font-medium text-sm transition">
+          <i data-lucide="graduation-cap" class="w-5 h-5"></i>
+          Escuela Bíblica
+        </button>
+        <button onclick="switchTab('appmovil')" id="nav-appmovil" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 font-medium text-sm transition">
+          <i data-lucide="smartphone" class="w-5 h-5"></i>
+          App Móvil
+        </button>
         <button onclick="switchTab('configuracion')" id="nav-configuracion" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 font-medium text-sm transition">
-          <i data-lucide="settings" class="w-5 h-5"></i>
-          Configuración
+          <i data-lucide="shield-check" class="w-5 h-5"></i>
+          Seguridad & Permisos
         </button>
       </nav>
     </div>
 
     <!-- TARJETA COMUNIDAD Y PERFIL -->
-    <div class="space-y-3">
+    <div class="space-y-3 pt-2">
       <div class="bg-slate-100 p-3 rounded-xl flex items-center gap-3">
         <div class="p-2 bg-blue-100 text-blue-600 rounded-lg">
           <i data-lucide="building-2" class="w-5 h-5"></i>
@@ -75,16 +98,17 @@
             PS
           </div>
           <div class="overflow-hidden">
-            <p class="text-xs font-semibold text-slate-800 truncate">Administrador</p>
-            <p class="text-[10px] text-slate-400 truncate">admin@miiglesia.app</p>
+            <p class="text-xs font-semibold text-slate-800 truncate">Psocikian</p>
+            <p class="text-[10px] text-slate-400 truncate">Súper Administrador</p>
           </div>
         </div>
+        <i data-lucide="bell" class="w-4 h-4 text-slate-400 hover:text-slate-600 cursor-pointer"></i>
       </div>
     </div>
   </aside>
 
   <!-- ÁREA DE CONTENIDO PRINCIPAL -->
-  <main class="flex-1 overflow-y-auto p-8">
+  <main class="flex-1 overflow-y-auto p-8 custom-scrollbar">
     
     <!-- HEADER GENERAL -->
     <div class="flex justify-between items-center mb-6">
@@ -93,24 +117,22 @@
         <p id="page-subtitle" class="text-slate-500 text-sm">Resumen general de tu iglesia</p>
       </div>
       <div class="flex items-center gap-3">
-        <span class="bg-blue-50 text-blue-600 text-xs font-semibold px-3 py-1.5 rounded-full flex items-center gap-1.5">
-          <i data-lucide="rocket" class="w-4 h-4"></i> 1/8 • 13%
+        <span class="bg-blue-50 text-blue-600 text-xs font-semibold px-3 py-1.5 rounded-full flex items-center gap-1.5 border border-blue-100">
+          <i data-lucide="rocket" class="w-4 h-4"></i> Módulos: 9/9 Activos
         </span>
       </div>
     </div>
 
-    <!-- VISTA 1: DASHBOARD -->
+    <!-- VISTA 1: DASHBOARD GENERAL -->
     <div id="view-dashboard" class="tab-content space-y-6">
-      <!-- TARJETAS DE MÉTRICAS -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-        
         <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex justify-between items-start">
           <div>
             <p class="text-xs font-medium text-slate-400 mb-2">Miembros Activos</p>
             <h2 class="text-3xl font-bold text-slate-800">1</h2>
             <p class="text-[11px] text-slate-400 mt-2">Ver la mejora de mayor impacto</p>
           </div>
-          <div class="p-2.5 bg-slate-100 text-slate-500 rounded-xl">
+          <div class="p-2.5 bg-blue-50 text-blue-600 rounded-xl">
             <i data-lucide="users" class="w-5 h-5"></i>
           </div>
         </div>
@@ -130,9 +152,7 @@
           <div>
             <p class="text-xs font-medium text-slate-400 mb-2">Consolidación</p>
             <h2 class="text-3xl font-bold text-slate-800">0%</h2>
-            <span class="text-[11px] text-red-600 font-semibold bg-red-50 px-2 py-0.5 rounded-full inline-block mt-2">
-              ● Crítico
-            </span>
+            <span class="text-[11px] text-red-600 font-semibold bg-red-50 px-2 py-0.5 rounded-full inline-block mt-2">● Crítico</span>
           </div>
           <div class="p-2.5 bg-slate-100 text-slate-500 rounded-xl">
             <i data-lucide="user-check" class="w-5 h-5"></i>
@@ -143,9 +163,7 @@
           <div>
             <p class="text-xs font-medium text-slate-400 mb-2">% Asistencia Grupos</p>
             <h2 class="text-3xl font-bold text-slate-800">0%</h2>
-            <span class="text-[11px] text-red-600 font-semibold bg-red-50 px-2 py-0.5 rounded-full inline-block mt-2">
-              ● Crítico
-            </span>
+            <span class="text-[11px] text-red-600 font-semibold bg-red-50 px-2 py-0.5 rounded-full inline-block mt-2">● Crítico</span>
           </div>
           <div class="p-2.5 bg-slate-100 text-slate-500 rounded-xl">
             <i data-lucide="trending-up" class="w-5 h-5"></i>
@@ -156,96 +174,291 @@
           <div>
             <p class="text-xs font-medium text-slate-400 mb-2">Deserciones</p>
             <h2 class="text-3xl font-bold text-slate-800">0</h2>
-            <span class="text-[11px] text-emerald-600 font-semibold bg-emerald-50 px-2 py-0.5 rounded-full inline-block mt-2">
-              ● Excelente
-            </span>
+            <span class="text-[11px] text-emerald-600 font-semibold bg-emerald-50 px-2 py-0.5 rounded-full inline-block mt-2">● Excelente</span>
           </div>
           <div class="p-2.5 bg-slate-100 text-slate-500 rounded-xl">
             <i data-lucide="user-x" class="w-5 h-5"></i>
           </div>
         </div>
-
       </div>
 
-      <!-- GRÁFICOS DINÁMICOS -->
+      <!-- TENDENCIAS Y MÉTRICAS COMPUESTAS -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        
-        <!-- Gráfico Miembros Activos -->
         <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
           <div class="flex justify-between items-center mb-4">
             <div>
               <h3 class="font-bold text-slate-800">Miembros Activos</h3>
               <p class="text-xs text-slate-400">Miembros activos por semana</p>
             </div>
-            <span class="text-xs font-semibold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-lg">
-              +100% Variación
-            </span>
+            <span class="text-xs font-semibold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-lg">+100%</span>
           </div>
-          <div class="h-56">
-            <canvas id="chartMiembros"></canvas>
-          </div>
+          <div class="h-52"><canvas id="chartMiembros"></canvas></div>
         </div>
 
-        <!-- Gráfico Servicio Dominical -->
         <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
           <div class="flex justify-between items-center mb-4">
             <div>
               <h3 class="font-bold text-slate-800">Servicio Dominical</h3>
               <p class="text-xs text-slate-400">Asistentes al servicio dominical</p>
             </div>
-            <span class="text-xs font-medium text-slate-400 bg-slate-100 px-2.5 py-1 rounded-lg">
-              0% Promedio
-            </span>
+            <span class="text-xs font-medium text-slate-400 bg-slate-100 px-2.5 py-1 rounded-lg">0% Promedio</span>
           </div>
-          <div class="h-56">
-            <canvas id="chartAsistencia"></canvas>
-          </div>
+          <div class="h-52"><canvas id="chartAsistencia"></canvas></div>
         </div>
 
+        <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
+          <div class="flex justify-between items-center mb-4">
+            <div>
+              <h3 class="font-bold text-slate-800">Nuevos Prospectos</h3>
+              <p class="text-xs text-slate-400">Prospectos ingresados por semana</p>
+            </div>
+          </div>
+          <div class="h-52"><canvas id="chartProspectos"></canvas></div>
+        </div>
+
+        <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
+          <div class="flex justify-between items-center mb-4">
+            <div>
+              <h3 class="font-bold text-slate-800">Ofrendas y Finanzas ($)</h3>
+              <p class="text-xs text-slate-400">Ingresos del módulo financiero por semana</p>
+            </div>
+            <span class="text-xs font-semibold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-lg">$0.00</span>
+          </div>
+          <div class="h-52"><canvas id="chartOfrendas"></canvas></div>
+        </div>
       </div>
     </div>
 
-    <!-- VISTA 2: MIEMBROS -->
+    <!-- VISTA: MIEMBROS Y CRM ECLESIAL -->
     <div id="view-miembros" class="tab-content hidden space-y-6">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center gap-4">
+          <div class="p-3 bg-blue-50 text-blue-600 rounded-xl"><i data-lucide="users" class="w-6 h-6"></i></div>
+          <div><p class="text-xs text-slate-400">Miembros Activos</p><h3 class="text-2xl font-bold text-slate-800">1</h3></div>
+        </div>
+        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center gap-4">
+          <div class="p-3 bg-emerald-50 text-emerald-600 rounded-xl"><i data-lucide="users-round" class="w-6 h-6"></i></div>
+          <div><p class="text-xs text-slate-400">Grupos Activos</p><h3 class="text-2xl font-bold text-slate-800">1</h3></div>
+        </div>
+        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center gap-4">
+          <div class="p-3 bg-amber-50 text-amber-600 rounded-xl"><i data-lucide="droplet" class="w-6 h-6"></i></div>
+          <div><p class="text-xs text-slate-400">Miembros Bautizados</p><h3 class="text-2xl font-bold text-slate-800">1</h3></div>
+        </div>
+      </div>
+
+      <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
+        <div class="flex flex-wrap justify-between items-center gap-4 mb-6">
+          <div class="flex gap-2 flex-1 max-w-xl">
+            <input type="text" placeholder="Buscar por nombre, teléfono o email..." class="border border-slate-200 rounded-xl px-4 py-2 text-sm w-full focus:outline-none focus:ring-2 focus:ring-blue-600">
+            <select class="border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-600">
+              <option>Todas las edades</option>
+              <option>Niños</option>
+              <option>Jóvenes</option>
+              <option>Adultos</option>
+            </select>
+            <select class="border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-600">
+              <option>Todos los grupos</option>
+              <option>Célula Norte</option>
+            </select>
+          </div>
+          <div class="flex gap-2">
+            <button class="border border-slate-200 text-slate-600 text-sm font-medium px-3 py-2 rounded-xl flex items-center gap-2 hover:bg-slate-50"><i data-lucide="download" class="w-4 h-4"></i> Exportar</button>
+            <button onclick="alert('Formulario de Nuevo Miembro preparado')" class="bg-blue-600 text-white text-sm font-semibold px-4 py-2 rounded-xl flex items-center gap-2 hover:bg-blue-700 transition"><i data-lucide="plus" class="w-4 h-4"></i> Nuevo Miembro</button>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse text-sm">
+            <thead>
+              <tr class="border-b border-slate-100 text-slate-400">
+                <th class="py-3 px-4 font-medium">Nombre Completo</th>
+                <th class="py-3 px-4 font-medium">Categoría</th>
+                <th class="py-3 px-4 font-medium">F. Ingreso</th>
+                <th class="py-3 px-4 font-medium">Grupo / Célula</th>
+                <th class="py-3 px-4 font-medium">Estado</th>
+                <th class="py-3 px-4 font-medium">Acciones</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+              <tr>
+                <td class="py-3.5 px-4 font-medium text-slate-800 flex items-center gap-3">
+                  <div class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-xs">OL</div>
+                  <div>
+                    <p class="font-bold text-slate-800">Osvaldo López</p>
+                    <p class="text-[11px] text-slate-400">osvaldo@email.com • 2983-345988</p>
+                  </div>
+                </td>
+                <td class="py-3.5 px-4 text-slate-600"><span class="bg-slate-100 text-slate-700 text-xs px-2.5 py-1 rounded-lg">Adulto</span></td>
+                <td class="py-3.5 px-4 text-slate-500">24 jul 2026</td>
+                <td class="py-3.5 px-4 text-slate-500">Sin grupo</td>
+                <td class="py-3.5 px-4"><span class="bg-emerald-50 text-emerald-600 font-medium px-2.5 py-1 rounded-full text-xs">● Activo</span></td>
+                <td class="py-3.5 px-4 text-slate-400 hover:text-blue-600 cursor-pointer"><i data-lucide="eye" class="w-4 h-4"></i></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- VISTA: CONSOLIDACIÓN -->
+    <div id="view-consolidacion" class="tab-content hidden space-y-6">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm">
+          <p class="text-xs text-slate-400">Total Prospectos</p>
+          <h2 class="text-2xl font-bold text-slate-800 mt-1">0</h2>
+        </div>
+        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm border-l-4 border-l-blue-500">
+          <p class="text-xs text-slate-400">Nuevos Visitantes</p>
+          <h2 class="text-2xl font-bold text-slate-800 mt-1">0</h2>
+        </div>
+        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm border-l-4 border-l-emerald-500">
+          <p class="text-xs text-slate-400">Consolidados</p>
+          <h2 class="text-2xl font-bold text-slate-800 mt-1">0</h2>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-slate-100 p-4 rounded-2xl border border-slate-200 min-h-[300px]">
+          <div class="flex justify-between items-center mb-3">
+            <h4 class="font-bold text-slate-700 text-sm flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-slate-400"></span> Sin Etapa Asignada</h4>
+            <span class="bg-slate-200 text-slate-600 text-xs px-2 py-0.5 rounded-full font-bold">0</span>
+          </div>
+          <div class="border-2 border-dashed border-slate-300 rounded-xl p-8 text-center text-xs text-slate-400">Arrastra prospectos aquí</div>
+        </div>
+
+        <div class="bg-slate-100 p-4 rounded-2xl border border-slate-200 min-h-[300px]">
+          <div class="flex justify-between items-center mb-3">
+            <h4 class="font-bold text-slate-700 text-sm flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span> Nuevos Visitantes</h4>
+            <span class="bg-slate-200 text-slate-600 text-xs px-2 py-0.5 rounded-full font-bold">0</span>
+          </div>
+          <div class="border-2 border-dashed border-slate-300 rounded-xl p-8 text-center text-xs text-slate-400">Arrastra prospectos aquí</div>
+        </div>
+
+        <div class="bg-slate-100 p-4 rounded-2xl border border-slate-200 min-h-[300px]">
+          <div class="flex justify-between items-center mb-3">
+            <h4 class="font-bold text-slate-700 text-sm flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Consolidados</h4>
+            <span class="bg-slate-200 text-slate-600 text-xs px-2 py-0.5 rounded-full font-bold">0</span>
+          </div>
+          <div class="border-2 border-dashed border-slate-300 rounded-xl p-8 text-center text-xs text-slate-400">Arrastra prospectos aquí</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VISTA: GRUPOS PEQUEÑOS / CÉLULAS -->
+    <div id="view-grupos" class="tab-content hidden space-y-6">
+      <div class="flex justify-between items-center bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
+        <div>
+          <h3 class="font-bold text-slate-800 text-lg">Estructura de Células & Casas de Paz</h3>
+          <p class="text-xs text-slate-400">Gestión de redes, zonas, mapas y reportes semanales de líderes</p>
+        </div>
+        <button class="bg-blue-600 text-white text-sm font-semibold px-4 py-2 rounded-xl flex items-center gap-2"><i data-lucide="plus" class="w-4 h-4"></i> Crear Nueva Célula</button>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
+          <div class="flex justify-between items-start">
+            <div>
+              <span class="bg-blue-50 text-blue-600 text-[11px] font-bold px-2.5 py-1 rounded-md">Zona Norte • Red Jóvenes</span>
+              <h4 class="font-bold text-slate-800 text-base mt-2">Célula "Luz y Esperanza"</h4>
+              <p class="text-xs text-slate-400">Líder: Carlos Gómez • Anfitrión: Familia Silva</p>
+            </div>
+            <div class="p-2 bg-slate-100 rounded-lg text-slate-600"><i data-lucide="map-pin" class="w-5 h-5"></i></div>
+          </div>
+          <div class="text-xs text-slate-500 space-y-1 bg-slate-50 p-3 rounded-xl">
+            <p><strong>Ubicación:</strong> Calle San Martín 450 (Geolocalizado)</p>
+            <p><strong>Día y Hora:</strong> Jueves 20:00 hs</p>
+          </div>
+          <button onclick="alert('Enviando reporte de reunión semanal...')" class="w-full bg-slate-800 hover:bg-slate-900 text-white text-xs font-semibold py-2 rounded-xl flex items-center justify-center gap-2"><i data-lucide="file-text" class="w-4 h-4"></i> Enviar Reporte de Reunión</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- VISTA: FINANZAS Y CONTABILIDAD ECLESIAL -->
+    <div id="view-finanzas" class="tab-content hidden space-y-6">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm">
+          <p class="text-xs text-slate-400">Ingresos Totales (Mes)</p>
+          <h2 class="text-2xl font-bold text-emerald-600 mt-1">$125,400.00</h2>
+        </div>
+        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm">
+          <p class="text-xs text-slate-400">Egresos / Gastos (Mes)</p>
+          <h2 class="text-2xl font-bold text-red-500 mt-1">$42,100.00</h2>
+        </div>
+        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm">
+          <p class="text-xs text-slate-400">Balance Neto</p>
+          <h2 class="text-2xl font-bold text-blue-600 mt-1">$83,300.00</h2>
+        </div>
+      </div>
+
       <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
         <div class="flex justify-between items-center mb-6">
-          <input type="text" placeholder="Buscar miembro..." class="border border-slate-200 rounded-xl px-4 py-2 text-sm w-72 focus:outline-none focus:ring-2 focus:ring-blue-600">
-          <button class="bg-blue-600 text-white text-sm font-semibold px-4 py-2 rounded-xl flex items-center gap-2 hover:bg-blue-700 transition">
-            <i data-lucide="plus" class="w-4 h-4"></i> Nuevo Miembro
-          </button>
+          <h3 class="font-bold text-slate-800">Registro de Diezmos, Ofrendas y Donaciones en Línea</h3>
+          <button class="bg-emerald-600 text-white text-sm font-semibold px-4 py-2 rounded-xl flex items-center gap-2"><i data-lucide="plus" class="w-4 h-4"></i> Registrar Movimiento</button>
         </div>
-        <table class="w-full text-left border-collapse text-sm">
-          <thead>
-            <tr class="border-b border-slate-100 text-slate-400">
-              <th class="py-3 px-4 font-medium">Nombre</th>
-              <th class="py-3 px-4 font-medium">Rol</th>
-              <th class="py-3 px-4 font-medium">Estado</th>
-              <th class="py-3 px-4 font-medium">Grupo</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-slate-100">
-            <tr>
-              <td class="py-3.5 px-4 font-medium text-slate-800 flex items-center gap-3">
-                <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-xs">
-                  PS
-                </div>
-                Psocikian
-              </td>
-              <td class="py-3.5 px-4 text-slate-500">Administrador</td>
-              <td class="py-3.5 px-4"><span class="bg-emerald-50 text-emerald-600 font-medium px-2 py-0.5 rounded-full text-xs">Activo</span></td>
-              <td class="py-3.5 px-4 text-slate-500">Líderes</td>
-            </tr>
-          </tbody>
-        </table>
+        <p class="text-xs text-slate-400 mb-4">Integración activa para pagos y donaciones electrónicas dentro de la app.</p>
       </div>
     </div>
 
-    <!-- SECCIONES EN DESARROLLO -->
-    <div id="view-generic" class="tab-content hidden">
-      <div class="bg-white p-12 rounded-2xl border border-slate-200/80 shadow-sm text-center">
-        <i data-lucide="construction" class="w-12 h-12 text-slate-300 mx-auto mb-3"></i>
-        <h3 class="font-bold text-slate-800 mb-1">Sección en construcción</h3>
-        <p class="text-sm text-slate-400">Pronto agregaremos nuevas funciones a este módulo.</p>
+    <!-- VISTA: MINISTERIOS Y VOLUNTARIADO -->
+    <div id="view-ministerios" class="tab-content hidden space-y-6">
+      <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
+        <h3 class="font-bold text-slate-800 mb-2">Programación de Servidores y Turnos</h3>
+        <p class="text-xs text-slate-400 mb-6">Asignación de roles (Alabanza, Usieres, Niños, Audiovisuales) con confirmación de asistencia.</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="border border-slate-200 p-4 rounded-xl flex justify-between items-center">
+            <div>
+              <p class="font-bold text-sm text-slate-800">Ministerio de Alabanza</p>
+              <p class="text-xs text-slate-400">Servicio Dominical - 10:00 AM</p>
+            </div>
+            <span class="bg-amber-50 text-amber-600 text-xs font-semibold px-2.5 py-1 rounded-full">Pendiente Confirmación</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VISTA: COMUNICACIÓN Y NOTIFICACIONES PUSH -->
+    <div id="view-comunicaciones" class="tab-content hidden space-y-6">
+      <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
+        <h3 class="font-bold text-slate-800">Envío de Notificaciones Push Masivas & Segmentadas</h3>
+        <p class="text-xs text-slate-400">Envía alertas directas a los celulares de los miembros, anuncios y peticiones de oración.</p>
+        <textarea placeholder="Escribe el mensaje o anuncio para la congregación..." class="w-full border border-slate-200 rounded-xl p-3 text-sm h-28 focus:outline-none focus:ring-2 focus:ring-blue-600"></textarea>
+        <button onclick="alert('Notificación Push Enviada Exitosamente')" class="bg-blue-600 text-white text-sm font-semibold px-5 py-2.5 rounded-xl flex items-center gap-2"><i data-lucide="send" class="w-4 h-4"></i> Enviar Alerta Push</button>
+      </div>
+    </div>
+
+    <!-- VISTA: EVENTOS Y CALENDARIO -->
+    <div id="view-eventos" class="tab-content hidden space-y-6">
+      <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
+        <div class="flex justify-between items-center mb-6">
+          <h3 class="font-bold text-slate-800">Calendario Eclesial & Check-in QR</h3>
+          <button class="bg-blue-600 text-white text-sm font-semibold px-4 py-2 rounded-xl flex items-center gap-2"><i data-lucide="calendar-plus" class="w-4 h-4"></i> Crear Evento</button>
+        </div>
+        <p class="text-xs text-slate-400">Inscripción previa a talleres, congresos y verificación de entrada mediante código QR.</p>
+      </div>
+    </div>
+
+    <!-- VISTA: ESCUELA BÍBLICA Y DISCIPULADO -->
+    <div id="view-cursos" class="tab-content hidden space-y-6">
+      <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
+        <h3 class="font-bold text-slate-800 mb-2">Academias y Discipulado (LMS)</h3>
+        <p class="text-xs text-slate-400 mb-6">Cursos de Bautismo, Escuela de Líderes, calificaciones y aulas virtuales/presenciales.</p>
+      </div>
+    </div>
+
+    <!-- VISTA: APLICACIÓN MÓVIL -->
+    <div id="view-appmovil" class="tab-content hidden space-y-6">
+      <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm text-center max-w-lg mx-auto">
+        <i data-lucide="smartphone" class="w-12 h-12 text-blue-600 mx-auto mb-3"></i>
+        <h3 class="font-bold text-slate-800 text-lg">Módulo de App Móvil para Congregantes</h3>
+        <p class="text-xs text-slate-400 mt-2 mb-6">Gestión de Perfil, Biblia integrada, Devocionales diarios, Transmisiones en vivo de Sermones y Peticiones de Oración públicas/privadas.</p>
+      </div>
+    </div>
+
+    <!-- VISTA: SEGURIDAD Y PERMISOS -->
+    <div id="view-configuracion" class="tab-content hidden space-y-6">
+      <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
+        <h3 class="font-bold text-slate-800 mb-2">Roles, Permisos y Multi-Sede</h3>
+        <p class="text-xs text-slate-400 mb-6">Niveles de acceso (Pastor, Tesorero, Líder, Servidor) y gestión centralizada de múltiples sedes/campus.</p>
       </div>
     </div>
 
@@ -255,7 +468,6 @@
   <script>
     lucide.createIcons();
 
-    // Navegación entre Pestañas
     function switchTab(tabName) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
       
@@ -268,34 +480,36 @@
         targetNav.className = "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl bg-blue-600 text-white font-medium text-sm transition";
       }
 
-      if (tabName === 'dashboard') {
-        document.getElementById('view-dashboard').classList.remove('hidden');
-        document.getElementById('page-title').innerText = 'Panel de Control';
-        document.getElementById('page-subtitle').innerText = 'Resumen general de tu iglesia';
-      } else if (tabName === 'miembros') {
-        document.getElementById('view-miembros').classList.remove('hidden');
-        document.getElementById('page-title').innerText = 'Miembros';
-        document.getElementById('page-subtitle').innerText = 'Gestión de miembros y líderes';
-      } else {
-        document.getElementById('view-generic').classList.remove('hidden');
-        document.getElementById('page-title').innerText = tabName.charAt(0).toUpperCase() + tabName.slice(1);
-        document.getElementById('page-subtitle').innerText = 'Gestión de módulo';
+      const viewMap = {
+        'dashboard': ['Panel de Control', 'Resumen general de tu iglesia'],
+        'miembros': ['Gestión de Personas y Membresía', 'CRM Eclesial completo'],
+        'consolidacion': ['Consolidación de Prospectos', 'Seguimiento de nuevos visitantes'],
+        'grupos': ['Grupos Pequeños & Células', 'Casas de Paz y mapas'],
+        'finanzas': ['Finanzas y Contabilidad Eclesial', 'Diezmos, ofrendas y donaciones'],
+        'ministerios': ['Ministerios y Voluntariado', 'Programación de turnos y servidores'],
+        'comunicaciones': ['Comunicación y Notificaciones Push', 'Mensajería masiva y avisos'],
+        'eventos': ['Eventos y Calendario', 'Inscripciones y Check-in QR'],
+        'cursos': ['Escuela Bíblica y Discipulado', 'LMS y cursos de formación'],
+        'appmovil': ['Aplicación Móvil Miembros', 'Biblia, devocionales y transmisión'],
+        'configuracion': ['Administración y Permisos', 'Multi-Sede y roles de usuario']
+      };
+
+      if (viewMap[tabName]) {
+        document.getElementById(`view-${tabName}`).classList.remove('hidden');
+        document.getElementById('page-title').innerText = viewMap[tabName][0];
+        document.getElementById('page-subtitle').innerText = viewMap[tabName][1];
       }
     }
 
-    // Inicializar Gráficos Chart.js
     window.onload = function() {
-      // Gráfico 1: Miembros Activos
-      const ctx1 = document.getElementById('chartMiembros').getContext('2d');
-      new Chart(ctx1, {
+      const config = (color, data) => ({
         type: 'line',
         data: {
-          labels: ['27 jul', '28 jul', '29 jul', '30 jul', '31 jul', '1 ago', '2 ago', '3 ago'],
+          labels: ['29 jun', '6 jul', '13 jul', '20 jul', '27 jul', '3 ago'],
           datasets: [{
-            label: 'Este año',
-            data: [0, 0, 0, 0, 0, 0, 0, 1],
-            borderColor: '#2563eb',
-            backgroundColor: 'rgba(37, 99, 235, 0.05)',
+            data: data,
+            borderColor: color,
+            backgroundColor: color + '10',
             borderWidth: 2,
             tension: 0.3,
             fill: true
@@ -305,43 +519,15 @@
           responsive: true,
           maintainAspectRatio: false,
           plugins: { legend: { display: false } },
-          scales: {
-            y: { beginAtZero: true, grid: { borderDash: [4, 4] } },
-            x: { grid: { display: false } }
-          }
+          scales: { y: { beginAtZero: true, grid: { borderDash: [4, 4] } }, x: { grid: { display: false } } }
         }
       });
 
-      // Gráfico 2: Servicio Dominical
-      const ctx2 = document.getElementById('chartAsistencia').getContext('2d');
-      new Chart(ctx2, {
-        type: 'line',
-        data: {
-          labels: ['Dom 1', 'Dom 2', 'Dom 3', 'Dom 4'],
-          datasets: [{
-            label: 'Asistencia',
-            data: [0, 0, 0, 0],
-            borderColor: '#94a3b8',
-            borderDash: [5, 5],
-            borderWidth: 2,
-            tension: 0.1
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: { legend: { display: false } },
-          scales: {
-            y: { beginAtZero: true },
-            x: { grid: { display: false } }
-          }
-        }
-      });
+      new Chart(document.getElementById('chartMiembros').getContext('2d'), config('#2563eb', [0, 0, 0, 0, 0, 1]));
+      new Chart(document.getElementById('chartAsistencia').getContext('2d'), config('#f59e0b', [0, 0, 0, 0, 0, 0]));
+      new Chart(document.getElementById('chartProspectos').getContext('2d'), config('#a855f7', [0, 0, 0, 0, 0, 0]));
+      new Chart(document.getElementById('chartOfrendas').getContext('2d'), config('#10b981', [0, 0, 0, 0, 0, 0]));
     };
-  </script>
-</body>
-</html>
-
   </script>
 </body>
 </html>
