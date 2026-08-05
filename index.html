@@ -437,7 +437,7 @@
       </div>
     </div>
 
-    <!-- MODAL POPUP REVISIÓN DE SOLICITUDES -->
+    <!-- MODAL REVISIÓN DE SOLICITUDES -->
     <div id="modal-revision-solicitudes" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden flex items-center justify-center z-50 p-4">
       <div class="bg-white rounded-2xl shadow-xl max-w-lg w-full p-6 space-y-5">
         <div class="flex justify-between items-center">
@@ -467,12 +467,11 @@
 
     const HOST_EMAIL = "psocikian@gmail.com";
 
-    // CLAVES CONFIGURADAS
+    // CLAVES CONFIGURADAS DE EMAILJS
     const EMAILJS_PUBLIC_KEY = "0HSh5_Ka-ILgIC-DJ"; 
     const EMAILJS_TEMPLATE_ID = "template_ugum9ge"; 
-    const EMAILJS_SERVICE_ID = "default_service"; // Cambiar por tu Service ID si le pusiste un nombre personalizado
+    const EMAILJS_SERVICE_ID = "service_m9pno7h";
 
-    // Inicialización del SDK de EmailJS
     if (typeof emailjs !== "undefined") {
       emailjs.init(EMAILJS_PUBLIC_KEY);
     }
@@ -536,18 +535,18 @@
       btnSubmit.innerText = "Enviando mail a psocikian@gmail.com...";
       btnSubmit.disabled = true;
 
-      // Envío real a través de EmailJS
       try {
-        await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+        const response = await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
           to_email: HOST_EMAIL,
           applicant_name: nombre,
           applicant_email: email,
           message: `El usuario ${nombre} (${email}) ha solicitado crear una cuenta en casadedios.app.`
         });
-        alert(`¡Solicitud enviada! Se ha despachado un correo electrónico REAL a ${HOST_EMAIL}.`);
+        console.log("Éxito al enviar email:", response);
+        alert(`¡Solicitud enviada! Se despachó un correo electrónico REAL a ${HOST_EMAIL}.`);
       } catch (err) {
-        console.error("Error al enviar el email:", err);
-        alert(`La solicitud se guardó internamente, pero hubo un error de conexión con EmailJS. Asegúrate de que el Service ID sea el correcto.`);
+        console.error("Error al enviar con EmailJS:", err);
+        alert(`La solicitud se guardó internamente. Error técnico con EmailJS: ` + JSON.stringify(err));
       }
 
       btnSubmit.innerText = "Enviar Solicitud al Anfitrión";
