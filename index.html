@@ -10,6 +10,8 @@
   <script src="https://unpkg.com/lucide@latest"></script>
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- EMAILJS SDK -->
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
   <style>
     .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
     .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; }
@@ -20,7 +22,7 @@
 </head>
 <body class="bg-slate-50 font-sans flex h-screen overflow-hidden text-slate-800">
 
-  <!-- ==================== PANTALLA DE AUTH / INICIO DE SESIÓN OBLIGATORIO ==================== -->
+  <!-- PANTALLA DE AUTH / INICIO DE SESIÓN OBLIGATORIO -->
   <div id="auth-screen" class="fixed inset-0 bg-slate-900 flex items-center justify-center z-50 p-4">
     <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full p-8 space-y-6">
       <div class="text-center space-y-2">
@@ -31,7 +33,6 @@
         <p class="text-xs text-slate-400">Accede o solicita una cuenta para ingresar a la plataforma</p>
       </div>
 
-      <!-- BOTONES DE PESTAÑA DENTRO DEL LOGIN -->
       <div class="flex border-b border-slate-200 text-sm font-semibold">
         <button id="tab-btn-login" onclick="toggleAuthTab('login')" class="flex-1 py-2 text-blue-600 border-b-2 border-blue-600 transition">Iniciar Sesión</button>
         <button id="tab-btn-register" onclick="toggleAuthTab('register')" class="flex-1 py-2 text-slate-400 border-b-2 border-transparent hover:text-slate-600 transition">Crear Cuenta</button>
@@ -67,20 +68,18 @@
           <input type="password" id="reg-password" required placeholder="Crea una contraseña segura" class="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600 bg-slate-50/50">
         </div>
         <p class="text-[11px] text-amber-600 bg-amber-50 p-2.5 rounded-xl border border-amber-200">
-          ⚠️ Se enviará una solicitud de autorización al anfitrión (psocikian@gmail.com). Podrás ingresar una vez aprobada tu cuenta.
+          ⚠️ Se enviará una solicitud de autorización por correo real a psocikian@gmail.com.
         </p>
-        <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 rounded-xl text-sm transition shadow-sm">
+        <button type="submit" id="btn-submit-register" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 rounded-xl text-sm transition shadow-sm">
           Enviar Solicitud al Anfitrión
         </button>
       </form>
     </div>
   </div>
 
-  <!-- ==================== ESTRUCTURA PRINCIPAL DE LA APP ==================== -->
   <!-- BARRA LATERAL (SIDEBAR) -->
   <aside class="w-64 bg-white border-r border-slate-200 flex flex-col justify-between p-4 flex-shrink-0">
     <div>
-      <!-- LOGO -->
       <div class="flex items-center gap-3 px-3 py-2 mb-6">
         <div class="bg-blue-600 text-white p-2 rounded-xl flex items-center justify-center shadow-sm">
           <i data-lucide="church" class="w-5 h-5"></i>
@@ -88,52 +87,40 @@
         <span class="font-bold text-lg text-slate-900 tracking-tight">miiglesia<span class="text-blue-600">.app</span></span>
       </div>
 
-      <!-- MENÚ DE NAVEGACIÓN -->
       <nav class="space-y-1 custom-scrollbar max-h-[calc(100vh-220px)] overflow-y-auto pr-1" id="main-nav">
         <button onclick="switchTab('dashboard')" id="nav-dashboard" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl bg-blue-600 text-white font-medium text-sm transition">
-          <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
-          Panel de Control
+          <i data-lucide="layout-dashboard" class="w-5 h-5"></i> Panel de Control
         </button>
         <button onclick="switchTab('miembros')" id="nav-miembros" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 font-medium text-sm transition">
-          <i data-lucide="users" class="w-5 h-5"></i>
-          Miembros
+          <i data-lucide="users" class="w-5 h-5"></i> Miembros
         </button>
         <button onclick="switchTab('consolidacion')" id="nav-consolidacion" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 font-medium text-sm transition">
-          <i data-lucide="heart" class="w-5 h-5"></i>
-          Consolidación
+          <i data-lucide="heart" class="w-5 h-5"></i> Consolidación
         </button>
         <button onclick="switchTab('grupos')" id="nav-grupos" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 font-medium text-sm transition">
-          <i data-lucide="users-round" class="w-5 h-5"></i>
-          Grupos Pequeños
+          <i data-lucide="users-round" class="w-5 h-5"></i> Grupos Pequeños
         </button>
         <button onclick="switchTab('ministerios')" id="nav-ministerios" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 font-medium text-sm transition">
-          <i data-lucide="hand-heart" class="w-5 h-5"></i>
-          Ministerios
+          <i data-lucide="hand-heart" class="w-5 h-5"></i> Ministerios
         </button>
         <button onclick="switchTab('comunicaciones')" id="nav-comunicaciones" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 font-medium text-sm transition">
-          <i data-lucide="message-square" class="w-5 h-5"></i>
-          Comunicación
+          <i data-lucide="message-square" class="w-5 h-5"></i> Comunicación
         </button>
         <button onclick="switchTab('eventos')" id="nav-eventos" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 font-medium text-sm transition">
-          <i data-lucide="calendar" class="w-5 h-5"></i>
-          Eventos
+          <i data-lucide="calendar" class="w-5 h-5"></i> Eventos
         </button>
         <button onclick="switchTab('cursos')" id="nav-cursos" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 font-medium text-sm transition">
-          <i data-lucide="graduation-cap" class="w-5 h-5"></i>
-          Escuela Bíblica
+          <i data-lucide="graduation-cap" class="w-5 h-5"></i> Escuela Bíblica
         </button>
         <button onclick="switchTab('appmovil')" id="nav-appmovil" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 font-medium text-sm transition">
-          <i data-lucide="smartphone" class="w-5 h-5"></i>
-          App Móvil
+          <i data-lucide="smartphone" class="w-5 h-5"></i> App Móvil
         </button>
         <button onclick="switchTab('configuracion')" id="nav-configuracion" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 font-medium text-sm transition">
-          <i data-lucide="shield-check" class="w-5 h-5"></i>
-          Seguridad & Permisos
+          <i data-lucide="shield-check" class="w-5 h-5"></i> Seguridad & Permisos
         </button>
       </nav>
     </div>
 
-    <!-- TARJETA COMUNIDAD Y PERFIL -->
     <div class="space-y-3 pt-2">
       <div class="bg-slate-100 p-3 rounded-xl flex items-center gap-3">
         <div class="p-2 bg-blue-100 text-blue-600 rounded-lg">
@@ -164,19 +151,15 @@
 
   <!-- ÁREA DE CONTENIDO PRINCIPAL -->
   <main class="flex-1 overflow-y-auto p-8 custom-scrollbar relative">
-    
-    <!-- HEADER GENERAL -->
     <div class="flex justify-between items-center mb-6">
       <div>
         <h1 id="page-title" class="text-2xl font-bold text-slate-900">Panel de Control</h1>
         <p id="page-subtitle" class="text-slate-500 text-sm">Resumen general de tu iglesia</p>
       </div>
       <div class="flex items-center gap-3">
-        <!-- BOTÓN DE SOLICITUDES PENDIENTES (SÓLO PARA PSOCIKIAN@GMAIL.COM) -->
         <button onclick="abrirModalSolicitudes()" id="btn-solicitudes-host" class="hidden relative bg-amber-50 text-amber-700 text-xs font-semibold px-3 py-1.5 rounded-full flex items-center gap-1.5 border border-amber-200 hover:bg-amber-100 transition">
           <i data-lucide="clock" class="w-4 h-4"></i> Solicitudes pendientes: <span id="cnt-solicitudes">0</span>
         </button>
-
         <span class="bg-blue-50 text-blue-600 text-xs font-semibold px-3 py-1.5 rounded-full flex items-center gap-1.5 border border-blue-100">
           <i data-lucide="rocket" class="w-4 h-4"></i> Módulos: 8/8 Activos
         </span>
@@ -192,75 +175,52 @@
             <h2 id="dash-miembros-cnt" class="text-3xl font-bold text-slate-800">0</h2>
             <p class="text-[11px] text-slate-400 mt-2">Ver la mejora de mayor impacto</p>
           </div>
-          <div class="p-2.5 bg-blue-50 text-blue-600 rounded-xl">
-            <i data-lucide="users" class="w-5 h-5"></i>
-          </div>
+          <div class="p-2.5 bg-blue-50 text-blue-600 rounded-xl"><i data-lucide="users" class="w-5 h-5"></i></div>
         </div>
-
         <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex justify-between items-start">
           <div>
             <p class="text-xs font-medium text-slate-400 mb-2">Nuevos Visitantes</p>
             <h2 class="text-3xl font-bold text-slate-800">0</h2>
             <p class="text-[11px] text-slate-400 mt-2">Proyección anual: 0 (0.0/mes)</p>
           </div>
-          <div class="p-2.5 bg-slate-100 text-slate-500 rounded-xl">
-            <i data-lucide="user-plus" class="w-5 h-5"></i>
-          </div>
+          <div class="p-2.5 bg-slate-100 text-slate-500 rounded-xl"><i data-lucide="user-plus" class="w-5 h-5"></i></div>
         </div>
-
         <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex justify-between items-start">
           <div>
             <p class="text-xs font-medium text-slate-400 mb-2">Consolidación</p>
             <h2 class="text-3xl font-bold text-slate-800">0%</h2>
             <span class="text-[11px] text-red-600 font-semibold bg-red-50 px-2 py-0.5 rounded-full inline-block mt-2">● Crítico</span>
           </div>
-          <div class="p-2.5 bg-slate-100 text-slate-500 rounded-xl">
-            <i data-lucide="user-check" class="w-5 h-5"></i>
-          </div>
+          <div class="p-2.5 bg-slate-100 text-slate-500 rounded-xl"><i data-lucide="user-check" class="w-5 h-5"></i></div>
         </div>
-
         <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex justify-between items-start">
           <div>
             <p class="text-xs font-medium text-slate-400 mb-2">% Asistencia Grupos</p>
             <h2 class="text-3xl font-bold text-slate-800">0%</h2>
             <span class="text-[11px] text-red-600 font-semibold bg-red-50 px-2 py-0.5 rounded-full inline-block mt-2">● Crítico</span>
           </div>
-          <div class="p-2.5 bg-slate-100 text-slate-500 rounded-xl">
-            <i data-lucide="trending-up" class="w-5 h-5"></i>
-          </div>
+          <div class="p-2.5 bg-slate-100 text-slate-500 rounded-xl"><i data-lucide="trending-up" class="w-5 h-5"></i></div>
         </div>
       </div>
 
-      <!-- TENDENCIAS Y MÉTRICAS -->
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
           <div class="flex justify-between items-center mb-4">
-            <div>
-              <h3 class="font-bold text-slate-800">Miembros Activos</h3>
-              <p class="text-xs text-slate-400">Miembros activos por semana</p>
-            </div>
+            <div><h3 class="font-bold text-slate-800">Miembros Activos</h3><p class="text-xs text-slate-400">Miembros activos por semana</p></div>
             <span class="text-xs font-semibold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-lg">+100%</span>
           </div>
           <div class="h-52"><canvas id="chartMiembros"></canvas></div>
         </div>
-
         <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
           <div class="flex justify-between items-center mb-4">
-            <div>
-              <h3 class="font-bold text-slate-800">Servicio Dominical</h3>
-              <p class="text-xs text-slate-400">Asistentes al servicio dominical</p>
-            </div>
+            <div><h3 class="font-bold text-slate-800">Servicio Dominical</h3><p class="text-xs text-slate-400">Asistentes al servicio dominical</p></div>
             <span class="text-xs font-medium text-slate-400 bg-slate-100 px-2.5 py-1 rounded-lg">0% Promedio</span>
           </div>
           <div class="h-52"><canvas id="chartAsistencia"></canvas></div>
         </div>
-
         <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
           <div class="flex justify-between items-center mb-4">
-            <div>
-              <h3 class="font-bold text-slate-800">Nuevos Prospectos</h3>
-              <p class="text-xs text-slate-400">Prospectos ingresados por semana</p>
-            </div>
+            <div><h3 class="font-bold text-slate-800">Nuevos Prospectos</h3><p class="text-xs text-slate-400">Prospectos ingresados por semana</p></div>
           </div>
           <div class="h-52"><canvas id="chartProspectos"></canvas></div>
         </div>
@@ -288,7 +248,6 @@
         <div class="flex flex-wrap justify-between items-center gap-4 mb-6">
           <div class="flex gap-2 flex-1 max-w-2xl">
             <input type="text" id="input-buscar-miembro" onkeyup="filtrarMiembros()" placeholder="Buscar por nombre, teléfono o email..." class="border border-slate-200 rounded-xl px-4 py-2 text-sm w-full focus:outline-none focus:ring-2 focus:ring-blue-600">
-            
             <select id="select-filtro-edad" onchange="filtrarMiembros()" class="border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-600">
               <option value="">Todas las edades</option>
               <option value="Niños">Niños</option>
@@ -299,12 +258,10 @@
               <option value="Adultos">Adultos</option>
               <option value="Ancianos">Ancianos</option>
             </select>
-
             <select id="select-filtro-grupo" onchange="filtrarMiembros()" class="border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-600">
               <option value="">Todos los grupos</option>
             </select>
           </div>
-
           <div class="flex gap-2">
             <button onclick="mostrarModalCrearGrupo()" class="border border-blue-200 text-blue-600 hover:bg-blue-50 text-sm font-semibold px-3.5 py-2 rounded-xl flex items-center gap-2 transition">
               <i data-lucide="folder-plus" class="w-4 h-4"></i> Crear Grupo
@@ -328,9 +285,7 @@
                 <th class="py-3 px-4 font-medium">Acciones</th>
               </tr>
             </thead>
-            <tbody id="tabla-miembros-body" class="divide-y divide-slate-100">
-              <!-- Carga dinámicamente -->
-            </tbody>
+            <tbody id="tabla-miembros-body" class="divide-y divide-slate-100"></tbody>
           </table>
         </div>
       </div>
@@ -441,9 +396,7 @@
           </div>
 
           <div class="flex justify-end gap-3 pt-4 border-t border-slate-100">
-            <button type="button" onclick="ocultarFormularioNuevo()" class="border border-slate-200 hover:bg-slate-50 text-slate-700 font-semibold px-5 py-2.5 rounded-xl text-sm transition">
-              Cancelar
-            </button>
+            <button type="button" onclick="ocultarFormularioNuevo()" class="border border-slate-200 hover:bg-slate-50 text-slate-700 font-semibold px-5 py-2.5 rounded-xl text-sm transition">Cancelar</button>
             <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2.5 rounded-xl text-sm shadow-sm transition flex items-center gap-2">
               <i data-lucide="check" class="w-4 h-4"></i> Guardar Miembro
             </button>
@@ -463,13 +416,10 @@
           <i data-lucide="plus" class="w-4 h-4"></i> Crear Grupo
         </button>
       </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="lista-grupos-cards">
-        <!-- Render dinámico de tarjetas de grupos -->
-      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="lista-grupos-cards"></div>
     </div>
 
-    <!-- MODAL POPUP PARA CREAR NUEVO GRUPO -->
+    <!-- MODAL CREAR NUEVO GRUPO -->
     <div id="modal-crear-grupo" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden flex items-center justify-center z-50 p-4">
       <div class="bg-white rounded-2xl shadow-xl max-w-md w-full p-6 space-y-5">
         <div class="flex justify-between items-center">
@@ -487,7 +437,7 @@
       </div>
     </div>
 
-    <!-- MODAL POPUP PARA REVISIÓN DE SOLICITUDES (ANFITRIÓN PSOCIKIAN@GMAIL.COM) -->
+    <!-- MODAL POPUP REVISIÓN DE SOLICITUDES -->
     <div id="modal-revision-solicitudes" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden flex items-center justify-center z-50 p-4">
       <div class="bg-white rounded-2xl shadow-xl max-w-lg w-full p-6 space-y-5">
         <div class="flex justify-between items-center">
@@ -497,9 +447,7 @@
           </div>
           <button onclick="cerrarModalSolicitudes()" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
         </div>
-        <div id="contenedor-solicitudes-lista" class="space-y-3 max-h-60 overflow-y-auto pr-1">
-          <!-- Carga dinámicamente -->
-        </div>
+        <div id="contenedor-solicitudes-lista" class="space-y-3 max-h-60 overflow-y-auto pr-1"></div>
       </div>
     </div>
 
@@ -519,7 +467,16 @@
 
     const HOST_EMAIL = "psocikian@gmail.com";
 
-    // ESTADO INICIAL BASE
+    // CLAVES CONFIGURADAS
+    const EMAILJS_PUBLIC_KEY = "0HSh5_Ka-ILgIC-DJ"; 
+    const EMAILJS_TEMPLATE_ID = "template_ugum9ge"; 
+    const EMAILJS_SERVICE_ID = "default_service"; // Cambiar por tu Service ID si le pusiste un nombre personalizado
+
+    // Inicialización del SDK de EmailJS
+    if (typeof emailjs !== "undefined") {
+      emailjs.init(EMAILJS_PUBLIC_KEY);
+    }
+
     let usuarios = JSON.parse(localStorage.getItem('miiglesia_usuarios')) || [
       { nombre: "Psocikian", email: "psocikian@gmail.com", pass: "admin123", estado: "aprobado", rol: "Anfitrión Súper Admin" }
     ];
@@ -541,7 +498,6 @@
       actualizarInterfazUsuario();
     }
 
-    // CONTROL DE SISTEMA DE AUTENTICACIÓN
     function toggleAuthTab(tab) {
       if(tab === 'login') {
         document.getElementById('form-login').classList.remove('hidden');
@@ -556,11 +512,12 @@
       }
     }
 
-    function procesarRegistro(e) {
+    async function procesarRegistro(e) {
       e.preventDefault();
       const nombre = document.getElementById('reg-nombre').value.trim();
       const email = document.getElementById('reg-email').value.trim().toLowerCase();
       const pass = document.getElementById('reg-password').value;
+      const btnSubmit = document.getElementById('btn-submit-register');
 
       if(!email.endsWith('@gmail.com')) {
         alert('Por favor, ingresa un correo con dominio @gmail.com');
@@ -572,20 +529,31 @@
         return;
       }
 
-      const nuevoUsuario = {
-        nombre,
-        email,
-        pass,
-        estado: 'pendiente',
-        rol: 'Miembro'
-      };
-
+      const nuevoUsuario = { nombre, email, pass, estado: 'pendiente', rol: 'Miembro' };
       usuarios.push(nuevoUsuario);
       guardarMemoria();
 
+      btnSubmit.innerText = "Enviando mail a psocikian@gmail.com...";
+      btnSubmit.disabled = true;
+
+      // Envío real a través de EmailJS
+      try {
+        await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+          to_email: HOST_EMAIL,
+          applicant_name: nombre,
+          applicant_email: email,
+          message: `El usuario ${nombre} (${email}) ha solicitado crear una cuenta en casadedios.app.`
+        });
+        alert(`¡Solicitud enviada! Se ha despachado un correo electrónico REAL a ${HOST_EMAIL}.`);
+      } catch (err) {
+        console.error("Error al enviar el email:", err);
+        alert(`La solicitud se guardó internamente, pero hubo un error de conexión con EmailJS. Asegúrate de que el Service ID sea el correcto.`);
+      }
+
+      btnSubmit.innerText = "Enviar Solicitud al Anfitrión";
+      btnSubmit.disabled = false;
       document.getElementById('form-register').reset();
       toggleAuthTab('login');
-      alert(`¡Solicitud registrada con éxito! Se envió una notificación al correo de psocikian@gmail.com para autorizar tu acceso.`);
     }
 
     function procesarLogin(e) {
@@ -638,7 +606,6 @@
       document.getElementById('user-role-display').innerText = usuarioActivo.rol;
       document.getElementById('user-avatar-badge').innerText = usuarioActivo.nombre.substring(0, 2).toUpperCase();
 
-      // Muestra o oculta panel del Anfitrión exclusivo (psocikian@gmail.com)
       const btnHost = document.getElementById('btn-solicitudes-host');
       const pendientes = usuarios.filter(u => u.estado === 'pendiente');
 
@@ -696,7 +663,6 @@
       }
     }
 
-    // CATEGORIZACIÓN AUTOMÁTICA DE EDADES
     function calcularEdad() {
       const nac = document.getElementById('input-nacimiento').value;
       if (!nac) return;
@@ -717,7 +683,6 @@
       document.getElementById('input-categoria-edad').value = `${cat} (${edadVal} años)`;
     }
 
-    // PREVIEW FOTO
     function previewImage(event) {
       const file = event.target.files[0];
       if (file) {
@@ -730,7 +695,6 @@
       }
     }
 
-    // MANEJO DE GRUPOS DINÁMICOS
     function renderGruposDropdowns() {
       const selFiltro = document.getElementById('select-filtro-grupo');
       const selForm = document.getElementById('input-grupo-form');
@@ -803,7 +767,7 @@
 
     function eliminarGrupo(index) {
       const grupoAEliminar = grupos[index];
-      if(confirm(`¿Deseas eliminar el grupo "${grupoAEliminar}"? Los miembros pasará a "Sin grupo".`)) {
+      if(confirm(`¿Deseas eliminar el grupo "${grupoAEliminar}"? Los miembros pasarán a "Sin grupo".`)) {
         grupos.splice(index, 1);
         miembros.forEach(m => {
           if (m.grupo === grupoAEliminar) m.grupo = "Sin grupo";
@@ -812,7 +776,6 @@
       }
     }
 
-    // NAVEGACIÓN
     function switchTab(tabName) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
       
@@ -853,9 +816,7 @@
       document.getElementById('page-subtitle').innerText = 'Agrega un nuevo miembro a tu iglesia';
     }
 
-    function ocultarFormularioNuevo() {
-      switchTab('miembros');
-    }
+    function ocultarFormularioNuevo() { switchTab('miembros'); }
 
     function guardarNuevoMiembro(event) {
       event.preventDefault();
@@ -993,8 +954,6 @@
     };
   </script>
 </body>
-</html>
-
 </html>
 
 
