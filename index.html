@@ -361,6 +361,88 @@
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="lista-grupos-cards"></div>
     </div>
 
+    <!-- VISTA: MINISTERIOS -->
+    <div id="view-ministerios" class="tab-content hidden space-y-6">
+      <div class="flex justify-between items-center">
+        <div>
+          <h2 class="text-xl font-bold text-slate-800">Ministerios</h2>
+          <p class="text-xs text-slate-400">Gestiona los equipos de trabajo, líderes, eventos y servidores</p>
+        </div>
+        <button onclick="abrirModalCrearMinisterio()" class="bg-blue-600 text-white text-sm font-semibold px-4 py-2 rounded-xl flex items-center gap-2 hover:bg-blue-700 transition shadow-sm">
+          <i data-lucide="plus" class="w-4 h-4"></i> Crear Ministerio
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="contenedor-ministerios-cards"></div>
+    </div>
+
+    <!-- MODAL CREAR MINISTERIO -->
+    <div id="modal-crear-ministerio" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden flex items-center justify-center z-50 p-4">
+      <div class="bg-white rounded-2xl shadow-xl max-w-md w-full p-6 space-y-5">
+        <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+          <h3 class="text-lg font-bold text-slate-800">Crear Nuevo Ministerio</h3>
+          <button onclick="cerrarModalCrearMinisterio()" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
+        </div>
+        <div class="space-y-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Nombre del Ministerio *</label>
+            <input type="text" id="input-nombre-min" placeholder="Ej: Alabanza, Salida, Jóvenes, Niños" class="w-full border border-slate-200 rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Líder a Cargo</label>
+            <select id="select-lider-min" class="w-full border border-slate-200 rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600 text-slate-700">
+              <option value="">Seleccionar líder de miembros...</option>
+            </select>
+          </div>
+        </div>
+        <div class="flex justify-end gap-2 pt-2 border-t border-slate-100">
+          <button onclick="cerrarModalCrearMinisterio()" class="border border-slate-200 text-slate-600 px-4 py-2 rounded-xl text-sm font-medium hover:bg-slate-50 transition">Cancelar</button>
+          <button onclick="guardarNuevoMinisterio()" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-xl text-sm font-semibold transition">Guardar Ministerio</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL CREAR EVENTO DE MINISTERIO Y AGREGAR SERVIDORES -->
+    <div id="modal-evento-ministerio" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden flex items-center justify-center z-50 p-4 overflow-y-auto">
+      <div class="bg-white rounded-2xl shadow-xl max-w-lg w-full p-6 space-y-5 my-8">
+        <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+          <div>
+            <h3 class="text-lg font-bold text-slate-800" id="titulo-modal-evento-min">Agendar Evento / Servicio</h3>
+            <p class="text-xs text-slate-400" id="subtitulo-modal-evento-min">Ministerio</p>
+          </div>
+          <button onclick="cerrarModalEventoMinisterio()" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
+        </div>
+
+        <form id="form-evento-ministerio" onsubmit="guardarEventoMinisterio(event)" class="space-y-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Nombre o Tipo de Servicio *</label>
+            <input type="text" id="input-evento-min-nombre" required placeholder="Ej: Domingo de Alabanza, Reunión Semanal" class="w-full border border-slate-200 rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600">
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Fecha *</label>
+              <input type="date" id="input-evento-min-fecha" required class="w-full border border-slate-200 rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600 text-slate-700">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Hora</label>
+              <input type="time" id="input-evento-min-hora" class="w-full border border-slate-200 rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600 text-slate-700">
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Servidores Asignados para este Día</label>
+            <p class="text-[11px] text-slate-400 mb-2">Selecciona quienes estarán sirviendo en esta fecha:</p>
+            <div id="contenedor-check-servidores" class="max-h-40 overflow-y-auto border border-slate-200 rounded-xl p-3 space-y-2 bg-slate-50/50 custom-scrollbar"></div>
+          </div>
+
+          <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
+            <button type="button" onclick="cerrarModalEventoMinisterio()" class="border border-slate-200 text-slate-600 px-4 py-2 rounded-xl text-sm font-medium hover:bg-slate-50 transition">Cancelar</button>
+            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-xl text-sm font-semibold transition">Guardar Evento & Equipo</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
     <!-- MODAL CREAR NUEVO GRUPO -->
     <div id="modal-crear-grupo" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden flex items-center justify-center z-50 p-4">
       <div class="bg-white rounded-2xl shadow-xl max-w-md w-full p-6 space-y-5">
@@ -395,7 +477,6 @@
 
     <!-- OTROS MÓDULOS -->
     <div id="view-consolidacion" class="tab-content hidden space-y-6"><div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm"><h3 class="font-bold">Módulo Consolidación</h3></div></div>
-    <div id="view-ministerios" class="tab-content hidden space-y-6"><div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm"><h3 class="font-bold">Módulo Ministerios</h3></div></div>
     <div id="view-comunicaciones" class="tab-content hidden space-y-6"><div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm"><h3 class="font-bold">Módulo Comunicaciones</h3></div></div>
     <div id="view-eventos" class="tab-content hidden space-y-6"><div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm"><h3 class="font-bold">Módulo Eventos</h3></div></div>
     <div id="view-cursos" class="tab-content hidden space-y-6"><div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm"><h3 class="font-bold">Módulo Escuela Bíblica</h3></div></div>
@@ -423,17 +504,24 @@
     let usuarios = JSON.parse(localStorage.getItem('miiglesia_usuarios')) || [usuarioActivo];
     let miembros = JSON.parse(localStorage.getItem('miiglesia_miembros')) || [];
     let grupos = JSON.parse(localStorage.getItem('miiglesia_grupos')) || ['Líderes'];
+    let ministerios = JSON.parse(localStorage.getItem('miiglesia_ministerios')) || [
+      { id: 1, nombre: "Alabanza & Adoración", lider: "Sin asignar", eventos: [] },
+      { id: 2, nombre: "Niños & Escuela Dominical", lider: "Sin asignar", eventos: [] }
+    ];
     let tempFoto = null;
+    let minSeleccionadoId = null;
 
     function guardarMemoria() {
       localStorage.setItem('miiglesia_usuarios', JSON.stringify(usuarios));
       localStorage.setItem('miiglesia_usuario_activo', JSON.stringify(usuarioActivo));
       localStorage.setItem('miiglesia_miembros', JSON.stringify(miembros));
       localStorage.setItem('miiglesia_grupos', JSON.stringify(grupos));
+      localStorage.setItem('miiglesia_ministerios', JSON.stringify(ministerios));
       
       renderGruposDropdowns();
       renderTabla();
       renderTarjetasGrupos();
+      renderMinisterios();
       actualizarContadores();
       actualizarInterfazUsuario();
     }
@@ -586,6 +674,166 @@
       lucide.createIcons();
     }
 
+    /* MÓDULO MINISTERIOS */
+    function renderMinisterios() {
+      const container = document.getElementById('contenedor-ministerios-cards');
+      if(!container) return;
+      container.innerHTML = '';
+
+      if(ministerios.length === 0) {
+        container.innerHTML = `<p class="text-sm text-slate-400 col-span-full py-8 text-center">No hay ministerios registrados. ¡Crea el primero!</p>`;
+        return;
+      }
+
+      ministerios.forEach((m) => {
+        const card = document.createElement('div');
+        card.className = "bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between space-y-4";
+        
+        let eventosHTML = '';
+        if(m.eventos && m.eventos.length > 0) {
+          eventosHTML = m.eventos.map(ev => `
+            <div class="bg-slate-50 border border-slate-100 rounded-xl p-3 text-xs space-y-1">
+              <div class="flex justify-between items-center font-semibold text-slate-800">
+                <span>📅 ${ev.nombre}</span>
+                <span class="text-[10px] bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full">${ev.fecha} ${ev.hora ? '• ' + ev.hora : ''}</span>
+              </div>
+              <p class="text-[11px] text-slate-500 font-medium">Servidores: ${ev.servidores && ev.servidores.length > 0 ? ev.servidores.join(', ') : 'Sin asignar'}</p>
+            </div>
+          `).join('');
+        } else {
+          eventosHTML = `<p class="text-xs text-slate-400 italic">No hay eventos programados</p>`;
+        }
+
+        card.innerHTML = `
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <div class="p-2.5 bg-blue-50 text-blue-600 rounded-xl"><i data-lucide="hand-heart" class="w-5 h-5"></i></div>
+              <button onclick="eliminarMinisterio(${m.id})" title="Eliminar Ministerio" class="text-slate-400 hover:text-red-600 transition"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+            </div>
+            <div>
+              <h3 class="font-bold text-slate-800 text-lg">${m.nombre}</h3>
+              <p class="text-xs text-slate-500 mt-1"><span class="font-semibold text-slate-700">Líder:</span> ${m.lider}</p>
+            </div>
+            <div class="pt-2 border-t border-slate-100 space-y-2">
+              <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Próximos Eventos / Servicios</p>
+              <div class="space-y-2 max-h-48 overflow-y-auto custom-scrollbar pr-1">
+                ${eventosHTML}
+              </div>
+            </div>
+          </div>
+          <div class="pt-3 border-t border-slate-100">
+            <button onclick="abrirModalEventoMinisterio(${m.id})" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs py-2 px-3 rounded-xl transition flex items-center justify-center gap-1.5">
+              <i data-lucide="calendar-plus" class="w-4 h-4 text-blue-600"></i> Agendar Evento / Servidores
+            </button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+      lucide.createIcons();
+    }
+
+    function abrirModalCrearMinisterio() {
+      const selectLider = document.getElementById('select-lider-min');
+      selectLider.innerHTML = '<option value="Sin asignar">Sin asignar</option>';
+      miembros.forEach(m => {
+        selectLider.innerHTML += `<option value="${m.nombre} ${m.apellido}">${m.nombre} ${m.apellido}</option>`;
+      });
+      document.getElementById('modal-crear-ministerio').classList.remove('hidden');
+    }
+
+    function cerrarModalCrearMinisterio() {
+      document.getElementById('modal-crear-ministerio').classList.add('hidden');
+      document.getElementById('input-nombre-min').value = '';
+    }
+
+    function guardarNuevoMinisterio() {
+      const nombre = document.getElementById('input-nombre-min').value.trim();
+      const lider = document.getElementById('select-lider-min').value || "Sin asignar";
+
+      if(!nombre) {
+        alert("Por favor ingresa un nombre para el ministerio.");
+        return;
+      }
+
+      const nuevo = {
+        id: Date.now(),
+        nombre: nombre,
+        lider: lider,
+        eventos: []
+      };
+
+      ministerios.push(nuevo);
+      guardarMemoria();
+      cerrarModalCrearMinisterio();
+    }
+
+    function eliminarMinisterio(id) {
+      if(confirm("¿Seguro que deseas eliminar este ministerio?")) {
+        ministerios = ministerios.filter(m => m.id !== id);
+        guardarMemoria();
+      }
+    }
+
+    function abrirModalEventoMinisterio(minId) {
+      minSeleccionadoId = minId;
+      const min = ministerios.find(m => m.id === minId);
+      if(!min) return;
+
+      document.getElementById('titulo-modal-evento-min').innerText = `Agendar Servicio / Evento`;
+      document.getElementById('subtitulo-modal-evento-min').innerText = `Ministerio: ${min.nombre}`;
+
+      const contCheck = document.getElementById('contenedor-check-servidores');
+      contCheck.innerHTML = '';
+
+      if(miembros.length === 0) {
+        contCheck.innerHTML = `<p class="text-xs text-slate-400 italic">No hay miembros registrados para seleccionar.</p>`;
+      } else {
+        miembros.forEach(m => {
+          const nombreComp = `${m.nombre} ${m.apellido}`;
+          contCheck.innerHTML += `
+            <label class="flex items-center gap-2 text-xs text-slate-700 cursor-pointer hover:bg-slate-100 p-1 rounded-lg transition">
+              <input type="checkbox" name="servidores-check" value="${nombreComp}" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500 w-4 h-4">
+              <span>${nombreComp} (${m.grupo || 'Sin grupo'})</span>
+            </label>
+          `;
+        });
+      }
+
+      document.getElementById('modal-evento-ministerio').classList.remove('hidden');
+    }
+
+    function cerrarModalEventoMinisterio() {
+      document.getElementById('modal-evento-ministerio').classList.add('hidden');
+      document.getElementById('form-evento-ministerio').reset();
+      minSeleccionadoId = null;
+    }
+
+    function guardarEventoMinisterio(e) {
+      e.preventDefault();
+      if(!minSeleccionadoId) return;
+
+      const nombre = document.getElementById('input-evento-min-nombre').value.trim();
+      const fecha = document.getElementById('input-evento-min-fecha').value;
+      const hora = document.getElementById('input-evento-min-hora').value;
+
+      const checkedBoxes = document.querySelectorAll('input[name="servidores-check"]:checked');
+      const servidores = Array.from(checkedBoxes).map(cb => cb.value);
+
+      const min = ministerios.find(m => m.id === minSeleccionadoId);
+      if(min) {
+        if(!min.eventos) min.eventos = [];
+        min.eventos.unshift({
+          id: Date.now(),
+          nombre,
+          fecha,
+          hora,
+          servidores
+        });
+        guardarMemoria();
+        cerrarModalEventoMinisterio();
+      }
+    }
+
     function mostrarModalCrearGrupo() {
       document.getElementById('modal-crear-grupo').classList.remove('hidden');
     }
@@ -640,6 +888,11 @@
         document.getElementById('page-title').innerText = 'Grupos Pequeños';
         document.getElementById('page-subtitle').innerText = 'Gestión integral de células y grupos';
         renderTarjetasGrupos();
+      } else if (tabName === 'ministerios') {
+        document.getElementById('view-ministerios').classList.remove('hidden');
+        document.getElementById('page-title').innerText = 'Ministerios';
+        document.getElementById('page-subtitle').innerText = 'Gestión de equipos, líderes y servidores';
+        renderMinisterios();
       } else {
         const viewEl = document.getElementById(`view-${tabName}`);
         if(viewEl) viewEl.classList.remove('hidden');
@@ -774,6 +1027,7 @@
       renderGruposDropdowns();
       renderTabla();
       renderTarjetasGrupos();
+      renderMinisterios();
       actualizarContadores();
 
       const config = (color, data) => ({
