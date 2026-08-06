@@ -180,7 +180,7 @@
         </div>
         <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center gap-4">
           <div class="p-3 bg-amber-50 text-amber-600 rounded-xl"><i data-lucide="droplet" class="w-6 h-6"></i></div>
-          <div><p class="text-xs text-slate-400">Miembros Bautizados</p><h3 class="text-2xl font-bold text-slate-800">0</h3></div>
+          <div><p class="text-xs text-slate-400">Miembros Bautizados</p><h3 id="stat-miembros-bautizados" class="text-2xl font-bold text-slate-800">0</h3></div>
         </div>
       </div>
 
@@ -220,6 +220,7 @@
                 <th class="py-3 px-4 font-medium">Categoría Edad</th>
                 <th class="py-3 px-4 font-medium">Barrio</th>
                 <th class="py-3 px-4 font-medium">F. Ingreso</th>
+                <th class="py-3 px-4 font-medium">Bautizado</th>
                 <th class="py-3 px-4 font-medium">Grupo / Célula</th>
                 <th class="py-3 px-4 font-medium">Estado</th>
                 <th class="py-3 px-4 font-medium">Acciones</th>
@@ -321,10 +322,17 @@
 
           <div class="space-y-4">
             <p class="text-xs font-bold text-slate-400 tracking-wider uppercase border-b border-slate-100 pb-2">Información de Iglesia</p>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
                 <label class="block text-xs font-semibold text-slate-700 mb-1">Fecha de Ingreso</label>
                 <input type="date" id="input-ingreso" value="2026-08-05" class="w-full border border-slate-200 rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600 bg-slate-50/50 text-slate-700">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">¿Bautizado?</label>
+                <select id="input-bautizado" class="w-full border border-slate-200 rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600 bg-slate-50/50 text-slate-700">
+                  <option value="No">No</option>
+                  <option value="Sí">Sí</option>
+                </select>
               </div>
               <div>
                 <label class="block text-xs font-semibold text-slate-700 mb-1">Grupo / Célula</label>
@@ -541,7 +549,7 @@
       </div>
     </div>
 
-    <!-- MODAL CREAR EVENTO DE MINISTERIO -->
+    <!-- MODAL CREAR / EDITAR EVENTO DE MINISTERIO -->
     <div id="modal-evento-ministerio" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden flex items-center justify-center z-50 p-4 overflow-y-auto">
       <div class="bg-white rounded-2xl shadow-xl max-w-lg w-full p-6 space-y-5 my-8">
         <div class="flex justify-between items-center border-b border-slate-100 pb-3">
@@ -652,6 +660,7 @@
 
     let tempFoto = null;
     let minSeleccionadoId = null;
+    let eventoEditandoId = null;
     let prospectoEditandoId = null;
 
     function guardarMemoria() {
@@ -694,8 +703,13 @@
       // 1. Contadores del módulo miembros
       const elemActivos = document.getElementById('stat-miembros-activos');
       const elemGruposCnt = document.getElementById('stat-grupos-activos');
+      const elemBautizadosCnt = document.getElementById('stat-miembros-bautizados');
+
+      const bautizadosTotal = miembros.filter(m => m.bautizado === 'Sí').length;
+
       if(elemActivos) elemActivos.innerText = miembros.length;
       if(elemGruposCnt) elemGruposCnt.innerText = grupos.length;
+      if(elemBautizadosCnt) elemBautizadosCnt.innerText = bautizadosTotal;
 
       // 2. Métricas del Panel de Control (Dashboard)
       const elemDashMiembros = document.getElementById('dash-miembros-cnt');
@@ -706,7 +720,7 @@
       if(elemDashMiembros) elemDashMiembros.innerText = miembros.length;
       if(elemDashVisitantes) elemDashVisitantes.innerText = prospectos.length;
 
-      // Cálculo de Porcentaje de Consolidación
+      // Porcentaje de Consolidación
       const consolidadosCnt = prospectos.filter(p => p.etapa === 'Consolidados').length;
       const pctConsolidacion = prospectos.length > 0 ? Math.round((consolidadosCnt / prospectos.length) * 100) : 0;
       if(elemDashConsolidacion) elemDashConsolidacion.innerText = `${pctConsolidacion}%`;
@@ -817,7 +831,7 @@
       }
     }
 
-    /* MÓDULO CONSOLIDACIÓN CON PASE AUTOMÁTICO A MIEMBROS */
+    /* MÓDULO CONSOLIDACIÓN */
     function renderConsolidacion() {
       const tbody = document.getElementById('tabla-consolidacion-body');
       if(!tbody) return;
@@ -826,7 +840,6 @@
       const query = document.getElementById('input-buscar-prospecto')?.value.toLowerCase() || '';
       const filtrados = prospectos.filter(p => p.nombre.toLowerCase().includes(query) || p.telefono.includes(query));
 
-      // Métricas internas
       document.getElementById('stat-prospectos-total').innerText = prospectos.length;
       document.getElementById('stat-prospectos-respondió').innerText = prospectos.filter(p => p.respondio === 'Sí').length;
       document.getElementById('stat-prospectos-volvieron').innerText = prospectos.filter(p => p.visitas === '2' || p.visitas === '3+').length;
@@ -949,7 +962,6 @@
         p.visitas = document.getElementById('edit-prospecto-visitas').value;
         p.celula = document.getElementById('edit-prospecto-celula').value;
 
-        // TRANSFERENCIA AUTOMÁTICA A MIEMBROS CUANDO PASA A CONSOLIDADOS
         if(etapaAnterior !== 'Consolidados' && nuevaEtapa === 'Consolidados') {
           const partesNombre = p.nombre.split(' ');
           const nombreVal = partesNombre[0] || p.nombre;
@@ -969,6 +981,7 @@
               email: '-',
               direccion: '-',
               ingreso: new Date().toISOString().split('T')[0],
+              bautizado: 'No',
               grupo: 'Sin grupo',
               foto: null
             });
@@ -1040,7 +1053,7 @@
       lucide.createIcons();
     }
 
-    /* MÓDULO MINISTERIOS */
+    /* MÓDULO MINISTERIOS CON EDITAR Y ELIMINAR EVENTOS */
     function renderMinisterios() {
       const container = document.getElementById('contenedor-ministerios-cards');
       if(!container) return;
@@ -1061,7 +1074,11 @@
             <div class="bg-slate-50 border border-slate-100 rounded-xl p-3 text-xs space-y-1">
               <div class="flex justify-between items-center font-semibold text-slate-800">
                 <span>📅 ${ev.nombre}</span>
-                <span class="text-[10px] bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full">${ev.fecha} ${ev.hora ? '• ' + ev.hora : ''}</span>
+                <div class="flex items-center gap-1">
+                  <span class="text-[10px] bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full mr-1">${ev.fecha} ${ev.hora ? '• ' + ev.hora : ''}</span>
+                  <button onclick="editarEventoMinisterio(${m.id}, ${ev.id})" class="text-slate-400 hover:text-blue-600 p-0.5" title="Editar Evento"><i data-lucide="edit-2" class="w-3.5 h-3.5"></i></button>
+                  <button onclick="eliminarEventoMinisterio(${m.id}, ${ev.id})" class="text-slate-400 hover:text-red-600 p-0.5" title="Eliminar Evento"><i data-lucide="trash" class="w-3.5 h-3.5"></i></button>
+                </div>
               </div>
               <p class="text-[11px] text-slate-500 font-medium">Servidores: ${ev.servidores && ev.servidores.length > 0 ? ev.servidores.join(', ') : 'Sin asignar'}</p>
             </div>
@@ -1140,25 +1157,39 @@
       }
     }
 
-    function abrirModalEventoMinisterio(minId) {
+    function abrirModalEventoMinisterio(minId, evId = null) {
       minSeleccionadoId = minId;
+      eventoEditandoId = evId;
+
       const min = ministerios.find(m => m.id === minId);
       if(!min) return;
 
-      document.getElementById('titulo-modal-evento-min').innerText = `Agendar Servicio / Evento`;
+      document.getElementById('titulo-modal-evento-min').innerText = evId ? `Editar Servicio / Evento` : `Agendar Servicio / Evento`;
       document.getElementById('subtitulo-modal-evento-min').innerText = `Ministerio: ${min.nombre}`;
 
       const contCheck = document.getElementById('contenedor-check-servidores');
       contCheck.innerHTML = '';
+
+      let evExistente = evId && min.eventos ? min.eventos.find(e => e.id === evId) : null;
+
+      if(evExistente) {
+        document.getElementById('input-evento-min-nombre').value = evExistente.nombre || '';
+        document.getElementById('input-evento-min-fecha').value = evExistente.fecha || '';
+        document.getElementById('input-evento-min-hora').value = evExistente.hora || '';
+      } else {
+        document.getElementById('form-evento-ministerio').reset();
+      }
 
       if(miembros.length === 0) {
         contCheck.innerHTML = `<p class="text-xs text-slate-400 italic">No hay miembros registrados para seleccionar.</p>`;
       } else {
         miembros.forEach(m => {
           const nombreComp = `${m.nombre} ${m.apellido}`;
+          const isChecked = evExistente && evExistente.servidores && evExistente.servidores.includes(nombreComp) ? 'checked' : '';
+
           contCheck.innerHTML += `
             <label class="flex items-center gap-2 text-xs text-slate-700 cursor-pointer hover:bg-slate-100 p-1 rounded-lg transition">
-              <input type="checkbox" name="servidores-check" value="${nombreComp}" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500 w-4 h-4">
+              <input type="checkbox" name="servidores-check" value="${nombreComp}" ${isChecked} class="rounded border-slate-300 text-blue-600 focus:ring-blue-500 w-4 h-4">
               <span>${nombreComp} (${m.grupo || 'Sin grupo'})</span>
             </label>
           `;
@@ -1168,10 +1199,25 @@
       document.getElementById('modal-evento-ministerio').classList.remove('hidden');
     }
 
+    function editarEventoMinisterio(minId, evId) {
+      abrirModalEventoMinisterio(minId, evId);
+    }
+
+    function eliminarEventoMinisterio(minId, evId) {
+      if(confirm('¿Deseas eliminar este evento/servicio?')) {
+        const min = ministerios.find(m => m.id === minId);
+        if(min && min.eventos) {
+          min.eventos = min.eventos.filter(e => e.id !== evId);
+          guardarMemoria();
+        }
+      }
+    }
+
     function cerrarModalEventoMinisterio() {
       document.getElementById('modal-evento-ministerio').classList.add('hidden');
       document.getElementById('form-evento-ministerio').reset();
       minSeleccionadoId = null;
+      eventoEditandoId = null;
     }
 
     function guardarEventoMinisterio(e) {
@@ -1188,13 +1234,26 @@
       const min = ministerios.find(m => m.id === minSeleccionadoId);
       if(min) {
         if(!min.eventos) min.eventos = [];
-        min.eventos.unshift({
-          id: Date.now(),
-          nombre,
-          fecha,
-          hora,
-          servidores
-        });
+
+        if(eventoEditandoId) {
+          // Edición
+          const ev = min.eventos.find(e => e.id === eventoEditandoId);
+          if(ev) {
+            ev.nombre = nombre;
+            ev.fecha = fecha;
+            ev.hora = hora;
+            ev.servidores = servidores;
+          }
+        } else {
+          // Nuevo
+          min.eventos.unshift({
+            id: Date.now(),
+            nombre,
+            fecha,
+            hora,
+            servidores
+          });
+        }
         guardarMemoria();
         cerrarModalEventoMinisterio();
       }
@@ -1295,6 +1354,7 @@
         email: document.getElementById('input-email').value || '-',
         direccion: document.getElementById('input-direccion').value || '-',
         ingreso: document.getElementById('input-ingreso').value,
+        bautizado: document.getElementById('input-bautizado').value || 'No',
         grupo: document.getElementById('input-grupo-form').value,
         foto: tempFoto
       };
@@ -1339,6 +1399,12 @@
           <td class="py-3.5 px-4 text-slate-500 text-xs">${m.barrio}</td>
           <td class="py-3.5 px-4 text-slate-500 text-xs">${m.ingreso}</td>
           <td class="py-3.5 px-4 text-slate-500 text-xs font-medium">
+            <select onchange="cambiarBautizadoMiembro(${idx}, this.value)" class="bg-slate-100 text-slate-700 border border-slate-200 px-2 py-1 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-blue-600">
+              <option value="No" ${(m.bautizado === 'No' || !m.bautizado) ? 'selected' : ''}>No</option>
+              <option value="Sí" ${m.bautizado === 'Sí' ? 'selected' : ''}>Sí</option>
+            </select>
+          </td>
+          <td class="py-3.5 px-4 text-slate-500 text-xs font-medium">
             <select onchange="cambiarGrupoMiembro(${idx}, this.value)" class="bg-slate-100 text-slate-700 border border-slate-200 px-2.5 py-1 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-blue-600">
               <option value="Sin grupo" ${m.grupo === 'Sin grupo' ? 'selected' : ''}>Sin grupo</option>
               ${grupos.map(g => `<option value="${g}" ${m.grupo === g ? 'selected' : ''}>${g}</option>`).join('')}
@@ -1350,6 +1416,11 @@
         tbody.appendChild(row);
       });
       lucide.createIcons();
+    }
+
+    function cambiarBautizadoMiembro(idx, valor) {
+      miembros[idx].bautizado = valor;
+      guardarMemoria();
     }
 
     function cambiarGrupoMiembro(idx, nuevoGrupo) {
