@@ -376,6 +376,147 @@
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="contenedor-ministerios-cards"></div>
     </div>
 
+    <!-- VISTA: CONSOLIDACIÓN -->
+    <div id="view-consolidacion" class="tab-content hidden space-y-6">
+      <div class="flex justify-between items-center">
+        <div>
+          <h2 class="text-xl font-bold text-slate-800">Consolidación</h2>
+          <p class="text-xs text-slate-400">Seguimiento de nuevos visitantes por etapas y nivel de integración</p>
+        </div>
+        <button onclick="abrirModalNuevoProspecto()" class="bg-blue-600 text-white text-sm font-semibold px-4 py-2 rounded-xl flex items-center gap-2 hover:bg-blue-700 transition shadow-sm">
+          <i data-lucide="user-plus" class="w-4 h-4"></i> Registrar Prospecto
+        </button>
+      </div>
+
+      <!-- TARJETAS DE MÉTRICAS RÁPIDAS -->
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex items-center gap-3">
+          <div class="p-3 bg-blue-50 text-blue-600 rounded-xl"><i data-lucide="users" class="w-5 h-5"></i></div>
+          <div><p class="text-xs text-slate-400">Total Prospectos</p><h3 id="stat-prospectos-total" class="text-xl font-bold text-slate-800">0</h3></div>
+        </div>
+        <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex items-center gap-3">
+          <div class="p-3 bg-amber-50 text-amber-600 rounded-xl"><i data-lucide="message-square" class="w-5 h-5"></i></div>
+          <div><p class="text-xs text-slate-400">Respondieron Mensaje</p><h3 id="stat-prospectos-respondió" class="text-xl font-bold text-slate-800">0</h3></div>
+        </div>
+        <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex items-center gap-3">
+          <div class="p-3 bg-purple-50 text-purple-600 rounded-xl"><i data-lucide="rotate-cw" class="w-5 h-5"></i></div>
+          <div><p class="text-xs text-slate-400">Volvieron 2+ Veces</p><h3 id="stat-prospectos-volvieron" class="text-xl font-bold text-slate-800">0</h3></div>
+        </div>
+        <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex items-center gap-3">
+          <div class="p-3 bg-emerald-50 text-emerald-600 rounded-xl"><i data-lucide="home" class="w-5 h-5"></i></div>
+          <div><p class="text-xs text-slate-400">En Célula / Células</p><h3 id="stat-prospectos-celula" class="text-xl font-bold text-slate-800">0</h3></div>
+        </div>
+      </div>
+
+      <!-- TABLA / LISTA DE SEGUIMIENTO -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
+        <div class="flex justify-between items-center gap-4">
+          <input type="text" id="input-buscar-prospecto" onkeyup="renderConsolidacion()" placeholder="Buscar prospecto por nombre o teléfono..." class="border border-slate-200 rounded-xl px-4 py-2 text-sm w-full max-w-md focus:outline-none focus:ring-2 focus:ring-blue-600">
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse text-sm">
+            <thead>
+              <tr class="border-b border-slate-100 text-slate-400">
+                <th class="py-3 px-4 font-medium">Nombre Completo</th>
+                <th class="py-3 px-4 font-medium">Teléfono</th>
+                <th class="py-3 px-4 font-medium">Etapa</th>
+                <th class="py-3 px-4 font-medium">¿Respondió Msj?</th>
+                <th class="py-3 px-4 font-medium">Visitas Posteriores</th>
+                <th class="py-3 px-4 font-medium">Integrado a Célula</th>
+                <th class="py-3 px-4 font-medium">Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="tabla-consolidacion-body" class="divide-y divide-slate-100"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL REGISTRAR PROSPECTO -->
+    <div id="modal-nuevo-prospecto" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden flex items-center justify-center z-50 p-4">
+      <div class="bg-white rounded-2xl shadow-xl max-w-md w-full p-6 space-y-5">
+        <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+          <h3 class="text-lg font-bold text-slate-800">Nuevo Prospecto de Visita</h3>
+          <button onclick="cerrarModalNuevoProspecto()" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
+        </div>
+        <form onsubmit="guardarNuevoProspecto(event)" class="space-y-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Nombre y Apellido *</label>
+            <input type="text" id="input-prospecto-nombre" required placeholder="Ej: Martin Luther" class="w-full border border-slate-200 rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Teléfono / WhatsApp *</label>
+            <input type="tel" id="input-prospecto-telefono" required placeholder="Ej: +54 2983 345988" class="w-full border border-slate-200 rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Fecha de Primera Visita</label>
+            <input type="date" id="input-prospecto-fecha" value="2026-08-05" class="w-full border border-slate-200 rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600 text-slate-700">
+          </div>
+          <div class="flex justify-end gap-2 pt-2 border-t border-slate-100">
+            <button type="button" onclick="cerrarModalNuevoProspecto()" class="border border-slate-200 text-slate-600 px-4 py-2 rounded-xl text-sm font-medium hover:bg-slate-50">Cancelar</button>
+            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-xl text-sm font-semibold">Guardar Prospecto</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- MODAL EDITAR SEGUIMIENTO CONSOLIDACIÓN -->
+    <div id="modal-editar-seguimiento" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden flex items-center justify-center z-50 p-4">
+      <div class="bg-white rounded-2xl shadow-xl max-w-md w-full p-6 space-y-5">
+        <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+          <div>
+            <h3 class="text-lg font-bold text-slate-800">Actualizar Seguimiento</h3>
+            <p class="text-xs text-slate-400" id="subtitulo-modal-seguimiento">Prospecto</p>
+          </div>
+          <button onclick="cerrarModalSeguimiento()" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
+        </div>
+        <form onsubmit="guardarSeguimiento(event)" class="space-y-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Etapa actual</label>
+            <select id="edit-prospecto-etapa" class="w-full border border-slate-200 rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600 text-slate-700">
+              <option value="Nuevos">Nuevos</option>
+              <option value="En Seguimiento">En Seguimiento</option>
+              <option value="Consolidados">Consolidados</option>
+              <option value="Inactivo">Inactivo</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">¿Respondió a los mensajes?</label>
+            <select id="edit-prospecto-respondio" class="w-full border border-slate-200 rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600 text-slate-700">
+              <option value="Pendiente">Sin contactar aún</option>
+              <option value="Sí">Sí respondió</option>
+              <option value="No">No respondió</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Veces que volvió a venir tras la 1ª visita</label>
+            <select id="edit-prospecto-visitas" class="w-full border border-slate-200 rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600 text-slate-700">
+              <option value="0">Ninguna vez más</option>
+              <option value="1">1 vez más</option>
+              <option value="2">2 veces más</option>
+              <option value="3+">3 o más veces</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">¿Se integró a una Célula / Grupo Pequeño?</label>
+            <select id="edit-prospecto-celula" class="w-full border border-slate-200 rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600 text-slate-700">
+              <option value="No">No se ha integrado</option>
+              <option value="Sí">Sí, ya asiste a una célula</option>
+            </select>
+          </div>
+
+          <div class="flex justify-end gap-2 pt-2 border-t border-slate-100">
+            <button type="button" onclick="cerrarModalSeguimiento()" class="border border-slate-200 text-slate-600 px-4 py-2 rounded-xl text-sm font-medium hover:bg-slate-50">Cancelar</button>
+            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-xl text-sm font-semibold">Guardar Cambios</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
     <!-- MODAL CREAR MINISTERIO -->
     <div id="modal-crear-ministerio" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden flex items-center justify-center z-50 p-4">
       <div class="bg-white rounded-2xl shadow-xl max-w-md w-full p-6 space-y-5">
@@ -476,7 +617,6 @@
     </div>
 
     <!-- OTROS MÓDULOS -->
-    <div id="view-consolidacion" class="tab-content hidden space-y-6"><div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm"><h3 class="font-bold">Módulo Consolidación</h3></div></div>
     <div id="view-comunicaciones" class="tab-content hidden space-y-6"><div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm"><h3 class="font-bold">Módulo Comunicaciones</h3></div></div>
     <div id="view-eventos" class="tab-content hidden space-y-6"><div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm"><h3 class="font-bold">Módulo Eventos</h3></div></div>
     <div id="view-cursos" class="tab-content hidden space-y-6"><div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm"><h3 class="font-bold">Módulo Escuela Bíblica</h3></div></div>
@@ -508,8 +648,13 @@
       { id: 1, nombre: "Alabanza & Adoración", lider: "Sin asignar", eventos: [] },
       { id: 2, nombre: "Niños & Escuela Dominical", lider: "Sin asignar", eventos: [] }
     ];
+    let prospectos = JSON.parse(localStorage.getItem('miiglesia_prospectos')) || [
+      { id: 1, nombre: "Martin Luther", telefono: "+542983345988", fecha: "2026-08-05", etapa: "Nuevos", respondio: "Sí", visitas: "1", celula: "No" }
+    ];
+
     let tempFoto = null;
     let minSeleccionadoId = null;
+    let prospectoEditandoId = null;
 
     function guardarMemoria() {
       localStorage.setItem('miiglesia_usuarios', JSON.stringify(usuarios));
@@ -517,11 +662,13 @@
       localStorage.setItem('miiglesia_miembros', JSON.stringify(miembros));
       localStorage.setItem('miiglesia_grupos', JSON.stringify(grupos));
       localStorage.setItem('miiglesia_ministerios', JSON.stringify(ministerios));
+      localStorage.setItem('miiglesia_prospectos', JSON.stringify(prospectos));
       
       renderGruposDropdowns();
       renderTabla();
       renderTarjetasGrupos();
       renderMinisterios();
+      renderConsolidacion();
       actualizarContadores();
       actualizarInterfazUsuario();
     }
@@ -619,6 +766,148 @@
           document.getElementById('avatar-preview').innerHTML = `<img src="${tempFoto}" class="w-full h-full object-cover">`;
         };
         reader.readAsDataURL(file);
+      }
+    }
+
+    /* MÓDULO CONSOLIDACIÓN */
+    function renderConsolidacion() {
+      const tbody = document.getElementById('tabla-consolidacion-body');
+      if(!tbody) return;
+      tbody.innerHTML = '';
+
+      const query = document.getElementById('input-buscar-prospecto')?.value.toLowerCase() || '';
+      const filtrados = prospectos.filter(p => p.nombre.toLowerCase().includes(query) || p.telefono.includes(query));
+
+      // Métricas
+      document.getElementById('stat-prospectos-total').innerText = prospectos.length;
+      document.getElementById('stat-prospectos-respondió').innerText = prospectos.filter(p => p.respondio === 'Sí').length;
+      document.getElementById('stat-prospectos-volvieron').innerText = prospectos.filter(p => p.visitas === '2' || p.visitas === '3+').length;
+      document.getElementById('stat-prospectos-celula').innerText = prospectos.filter(p => p.celula === 'Sí').length;
+
+      if(filtrados.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" class="py-8 text-center text-slate-400 text-xs">No se encontraron prospectos o personas en seguimiento.</td></tr>`;
+        return;
+      }
+
+      filtrados.forEach((p) => {
+        const row = document.createElement('tr');
+        row.className = "hover:bg-slate-50/80 transition";
+
+        // Badges estéticos
+        const badgeEtapa = p.etapa === 'Consolidados' 
+          ? '<span class="bg-emerald-50 text-emerald-600 font-semibold px-2.5 py-1 rounded-full text-xs">● Consolidados</span>'
+          : p.etapa === 'En Seguimiento'
+          ? '<span class="bg-blue-50 text-blue-600 font-semibold px-2.5 py-1 rounded-full text-xs">● En Seguimiento</span>'
+          : '<span class="bg-amber-50 text-amber-600 font-semibold px-2.5 py-1 rounded-full text-xs">● Nuevos</span>';
+
+        const badgeRespondio = p.respondio === 'Sí'
+          ? '<span class="text-emerald-600 font-semibold bg-emerald-50 px-2 py-0.5 rounded-lg text-xs">✓ Sí</span>'
+          : p.respondio === 'No'
+          ? '<span class="text-red-600 font-semibold bg-red-50 px-2 py-0.5 rounded-lg text-xs">✕ No</span>'
+          : '<span class="text-slate-400 bg-slate-100 px-2 py-0.5 rounded-lg text-xs">Pendiente</span>';
+
+        const badgeVisitas = p.visitas === '0'
+          ? '<span class="text-slate-500">Solo 1ª visita</span>'
+          : `<span class="font-semibold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-lg">${p.visitas} vez/veces más</span>`;
+
+        const badgeCelula = p.celula === 'Sí'
+          ? '<span class="text-emerald-600 font-semibold bg-emerald-50 px-2.5 py-1 rounded-full text-xs">🏠 Integrado</span>'
+          : '<span class="text-slate-400 text-xs">No integrado</span>';
+
+        row.innerHTML = `
+          <td class="py-3.5 px-4 font-bold text-slate-800">${p.nombre}</td>
+          <td class="py-3.5 px-4 text-slate-500 text-xs">${p.telefono}</td>
+          <td class="py-3.5 px-4">${badgeEtapa}</td>
+          <td class="py-3.5 px-4 text-xs">${badgeRespondio}</td>
+          <td class="py-3.5 px-4 text-xs">${badgeVisitas}</td>
+          <td class="py-3.5 px-4 text-xs">${badgeCelula}</td>
+          <td class="py-3.5 px-4 flex items-center gap-2">
+            <button onclick="abrirModalSeguimiento(${p.id})" class="bg-slate-100 hover:bg-blue-50 text-slate-600 hover:text-blue-600 p-1.5 rounded-lg transition" title="Editar seguimiento">
+              <i data-lucide="edit-3" class="w-4 h-4"></i>
+            </button>
+            <button onclick="eliminarProspecto(${p.id})" class="text-slate-400 hover:text-red-600 p-1.5 transition" title="Eliminar">
+              <i data-lucide="trash-2" class="w-4 h-4"></i>
+            </button>
+          </td>
+        `;
+        tbody.appendChild(row);
+      });
+      lucide.createIcons();
+    }
+
+    function abrirModalNuevoProspecto() {
+      document.getElementById('modal-nuevo-prospecto').classList.remove('hidden');
+    }
+
+    function cerrarModalNuevoProspecto() {
+      document.getElementById('modal-nuevo-prospecto').classList.add('hidden');
+      document.getElementById('input-prospecto-nombre').value = '';
+      document.getElementById('input-prospecto-telefono').value = '';
+    }
+
+    function guardarNuevoProspecto(e) {
+      e.preventDefault();
+      const nombre = document.getElementById('input-prospecto-nombre').value.trim();
+      const telefono = document.getElementById('input-prospecto-telefono').value.trim();
+      const fecha = document.getElementById('input-prospecto-fecha').value;
+
+      if(!nombre || !telefono) return;
+
+      const nuevo = {
+        id: Date.now(),
+        nombre,
+        telefono,
+        fecha,
+        etapa: "Nuevos",
+        respondio: "Pendiente",
+        visitas: "0",
+        celula: "No"
+      };
+
+      prospectos.unshift(nuevo);
+      guardarMemoria();
+      cerrarModalNuevoProspecto();
+    }
+
+    function abrirModalSeguimiento(id) {
+      prospectoEditandoId = id;
+      const p = prospectos.find(item => item.id === id);
+      if(!p) return;
+
+      document.getElementById('subtitulo-modal-seguimiento').innerText = `Prospecto: ${p.nombre}`;
+      document.getElementById('edit-prospecto-etapa').value = p.etapa || 'Nuevos';
+      document.getElementById('edit-prospecto-respondio').value = p.respondio || 'Pendiente';
+      document.getElementById('edit-prospecto-visitas').value = p.visitas || '0';
+      document.getElementById('edit-prospecto-celula').value = p.celula || 'No';
+
+      document.getElementById('modal-editar-seguimiento').classList.remove('hidden');
+    }
+
+    function cerrarModalSeguimiento() {
+      document.getElementById('modal-editar-seguimiento').classList.add('hidden');
+      prospectoEditandoId = null;
+    }
+
+    function guardarSeguimiento(e) {
+      e.preventDefault();
+      if(!prospectoEditandoId) return;
+
+      const p = prospectos.find(item => item.id === prospectoEditandoId);
+      if(p) {
+        p.etapa = document.getElementById('edit-prospecto-etapa').value;
+        p.respondio = document.getElementById('edit-prospecto-respondio').value;
+        p.visitas = document.getElementById('edit-prospecto-visitas').value;
+        p.celula = document.getElementById('edit-prospecto-celula').value;
+
+        guardarMemoria();
+        cerrarModalSeguimiento();
+      }
+    }
+
+    function eliminarProspecto(id) {
+      if(confirm('¿Deseas eliminar este registro de prospecto?')) {
+        prospectos = prospectos.filter(p => p.id !== id);
+        guardarMemoria();
       }
     }
 
@@ -893,6 +1182,11 @@
         document.getElementById('page-title').innerText = 'Ministerios';
         document.getElementById('page-subtitle').innerText = 'Gestión de equipos, líderes y servidores';
         renderMinisterios();
+      } else if (tabName === 'consolidacion') {
+        document.getElementById('view-consolidacion').classList.remove('hidden');
+        document.getElementById('page-title').innerText = 'Consolidación';
+        document.getElementById('page-subtitle').innerText = 'Seguimiento de nuevos visitantes por etapas y respuestas';
+        renderConsolidacion();
       } else {
         const viewEl = document.getElementById(`view-${tabName}`);
         if(viewEl) viewEl.classList.remove('hidden');
@@ -1028,6 +1322,7 @@
       renderTabla();
       renderTarjetasGrupos();
       renderMinisterios();
+      renderConsolidacion();
       actualizarContadores();
 
       const config = (color, data) => ({
