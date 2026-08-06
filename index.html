@@ -115,31 +115,31 @@
           <div>
             <p class="text-xs font-medium text-slate-400 mb-2">Miembros Activos</p>
             <h2 id="dash-miembros-cnt" class="text-3xl font-bold text-slate-800">0</h2>
-            <p class="text-[11px] text-slate-400 mt-2">Ver la mejora de mayor impacto</p>
+            <p class="text-[11px] text-slate-400 mt-2">Registrados en la plataforma</p>
           </div>
           <div class="p-2.5 bg-blue-50 text-blue-600 rounded-xl"><i data-lucide="users" class="w-5 h-5"></i></div>
         </div>
         <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex justify-between items-start">
           <div>
             <p class="text-xs font-medium text-slate-400 mb-2">Nuevos Visitantes</p>
-            <h2 class="text-3xl font-bold text-slate-800">0</h2>
-            <p class="text-[11px] text-slate-400 mt-2">Proyección anual: 0 (0.0/mes)</p>
+            <h2 id="dash-visitantes-cnt" class="text-3xl font-bold text-slate-800">0</h2>
+            <p class="text-[11px] text-slate-400 mt-2">Prospectos en Consolidación</p>
           </div>
           <div class="p-2.5 bg-slate-100 text-slate-500 rounded-xl"><i data-lucide="user-plus" class="w-5 h-5"></i></div>
         </div>
         <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex justify-between items-start">
           <div>
             <p class="text-xs font-medium text-slate-400 mb-2">Consolidación</p>
-            <h2 class="text-3xl font-bold text-slate-800">0%</h2>
-            <span class="text-[11px] text-red-600 font-semibold bg-red-50 px-2 py-0.5 rounded-full inline-block mt-2">● Crítico</span>
+            <h2 id="dash-consolidacion-pct" class="text-3xl font-bold text-slate-800">0%</h2>
+            <span id="badge-consolidacion-status" class="text-[11px] font-semibold px-2 py-0.5 rounded-full inline-block mt-2">● En progreso</span>
           </div>
           <div class="p-2.5 bg-slate-100 text-slate-500 rounded-xl"><i data-lucide="user-check" class="w-5 h-5"></i></div>
         </div>
         <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex justify-between items-start">
           <div>
-            <p class="text-xs font-medium text-slate-400 mb-2">% Asistencia Grupos</p>
-            <h2 class="text-3xl font-bold text-slate-800">0%</h2>
-            <span class="text-[11px] text-red-600 font-semibold bg-red-50 px-2 py-0.5 rounded-full inline-block mt-2">● Crítico</span>
+            <p class="text-xs font-medium text-slate-400 mb-2">% Asistencia Células</p>
+            <h2 id="dash-asistencia-grupos-pct" class="text-3xl font-bold text-slate-800">0%</h2>
+            <span id="badge-grupos-status" class="text-[11px] font-semibold px-2 py-0.5 rounded-full inline-block mt-2">● En progreso</span>
           </div>
           <div class="p-2.5 bg-slate-100 text-slate-500 rounded-xl"><i data-lucide="trending-up" class="w-5 h-5"></i></div>
         </div>
@@ -148,21 +148,19 @@
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
           <div class="flex justify-between items-center mb-4">
-            <div><h3 class="font-bold text-slate-800">Miembros Activos</h3><p class="text-xs text-slate-400">Miembros activos por semana</p></div>
-            <span class="text-xs font-semibold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-lg">+100%</span>
+            <div><h3 class="font-bold text-slate-800">Miembros Activos</h3><p class="text-xs text-slate-400">Progreso registrado</p></div>
           </div>
           <div class="h-52"><canvas id="chartMiembros"></canvas></div>
         </div>
         <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
           <div class="flex justify-between items-center mb-4">
-            <div><h3 class="font-bold text-slate-800">Servicio Dominical</h3><p class="text-xs text-slate-400">Asistentes al servicio dominical</p></div>
-            <span class="text-xs font-medium text-slate-400 bg-slate-100 px-2.5 py-1 rounded-lg">0% Promedio</span>
+            <div><h3 class="font-bold text-slate-800">Servicio Dominical</h3><p class="text-xs text-slate-400">Asistencia proyectada</p></div>
           </div>
           <div class="h-52"><canvas id="chartAsistencia"></canvas></div>
         </div>
         <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
           <div class="flex justify-between items-center mb-4">
-            <div><h3 class="font-bold text-slate-800">Nuevos Prospectos</h3><p class="text-xs text-slate-400">Prospectos ingresados por semana</p></div>
+            <div><h3 class="font-bold text-slate-800">Nuevos Prospectos</h3><p class="text-xs text-slate-400">Ingresos semanales</p></div>
           </div>
           <div class="h-52"><canvas id="chartProspectos"></canvas></div>
         </div>
@@ -408,7 +406,7 @@
         </div>
       </div>
 
-      <!-- TABLA / LISTA DE SEGUIMIENTO -->
+      <!-- TABLA DE SEGUIMIENTO -->
       <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
         <div class="flex justify-between items-center gap-4">
           <input type="text" id="input-buscar-prospecto" onkeyup="renderConsolidacion()" placeholder="Buscar prospecto por nombre o teléfono..." class="border border-slate-200 rounded-xl px-4 py-2 text-sm w-full max-w-md focus:outline-none focus:ring-2 focus:ring-blue-600">
@@ -477,7 +475,7 @@
             <select id="edit-prospecto-etapa" class="w-full border border-slate-200 rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600 text-slate-700">
               <option value="Nuevos">Nuevos</option>
               <option value="En Seguimiento">En Seguimiento</option>
-              <option value="Consolidados">Consolidados</option>
+              <option value="Consolidados">Consolidados (Se agregará a Miembros)</option>
               <option value="Inactivo">Inactivo</option>
             </select>
           </div>
@@ -543,7 +541,7 @@
       </div>
     </div>
 
-    <!-- MODAL CREAR EVENTO DE MINISTERIO Y AGREGAR SERVIDORES -->
+    <!-- MODAL CREAR EVENTO DE MINISTERIO -->
     <div id="modal-evento-ministerio" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden flex items-center justify-center z-50 p-4 overflow-y-auto">
       <div class="bg-white rounded-2xl shadow-xl max-w-lg w-full p-6 space-y-5 my-8">
         <div class="flex justify-between items-center border-b border-slate-100 pb-3">
@@ -691,6 +689,56 @@
       }
     }
 
+    /* SISTEMA DE ESTADÍSTICAS Y PANEL DE CONTROL SINCRONIZADO */
+    function actualizarContadores() {
+      // 1. Contadores del módulo miembros
+      const elemActivos = document.getElementById('stat-miembros-activos');
+      const elemGruposCnt = document.getElementById('stat-grupos-activos');
+      if(elemActivos) elemActivos.innerText = miembros.length;
+      if(elemGruposCnt) elemGruposCnt.innerText = grupos.length;
+
+      // 2. Métricas del Panel de Control (Dashboard)
+      const elemDashMiembros = document.getElementById('dash-miembros-cnt');
+      const elemDashVisitantes = document.getElementById('dash-visitantes-cnt');
+      const elemDashConsolidacion = document.getElementById('dash-consolidacion-pct');
+      const elemDashAsistenciaGrupos = document.getElementById('dash-asistencia-grupos-pct');
+
+      if(elemDashMiembros) elemDashMiembros.innerText = miembros.length;
+      if(elemDashVisitantes) elemDashVisitantes.innerText = prospectos.length;
+
+      // Cálculo de Porcentaje de Consolidación
+      const consolidadosCnt = prospectos.filter(p => p.etapa === 'Consolidados').length;
+      const pctConsolidacion = prospectos.length > 0 ? Math.round((consolidadosCnt / prospectos.length) * 100) : 0;
+      if(elemDashConsolidacion) elemDashConsolidacion.innerText = `${pctConsolidacion}%`;
+
+      const badgeConsolidacion = document.getElementById('badge-consolidacion-status');
+      if(badgeConsolidacion) {
+        if(pctConsolidacion < 30) {
+          badgeConsolidacion.innerText = "● Crítico";
+          badgeConsolidacion.className = "text-[11px] text-red-600 font-semibold bg-red-50 px-2 py-0.5 rounded-full inline-block mt-2";
+        } else {
+          badgeConsolidacion.innerText = "● Estable";
+          badgeConsolidacion.className = "text-[11px] text-emerald-600 font-semibold bg-emerald-50 px-2 py-0.5 rounded-full inline-block mt-2";
+        }
+      }
+
+      // Porcentaje de Asistencia a Células / Grupos Pequeños
+      const miembrosEnGrupos = miembros.filter(m => m.grupo && m.grupo !== 'Sin grupo').length;
+      const pctGrupos = miembros.length > 0 ? Math.round((miembrosEnGrupos / miembros.length) * 100) : 0;
+      if(elemDashAsistenciaGrupos) elemDashAsistenciaGrupos.innerText = `${pctGrupos}%`;
+
+      const badgeGrupos = document.getElementById('badge-grupos-status');
+      if(badgeGrupos) {
+        if(pctGrupos < 40) {
+          badgeGrupos.innerText = "● Bajo";
+          badgeGrupos.className = "text-[11px] text-amber-600 font-semibold bg-amber-50 px-2 py-0.5 rounded-full inline-block mt-2";
+        } else {
+          badgeGrupos.innerText = "● Óptimo";
+          badgeGrupos.className = "text-[11px] text-emerald-600 font-semibold bg-emerald-50 px-2 py-0.5 rounded-full inline-block mt-2";
+        }
+      }
+    }
+
     function abrirModalSolicitudes() {
       if(!usuarioActivo || usuarioActivo.email !== HOST_EMAIL) return;
 
@@ -769,7 +817,7 @@
       }
     }
 
-    /* MÓDULO CONSOLIDACIÓN */
+    /* MÓDULO CONSOLIDACIÓN CON PASE AUTOMÁTICO A MIEMBROS */
     function renderConsolidacion() {
       const tbody = document.getElementById('tabla-consolidacion-body');
       if(!tbody) return;
@@ -778,7 +826,7 @@
       const query = document.getElementById('input-buscar-prospecto')?.value.toLowerCase() || '';
       const filtrados = prospectos.filter(p => p.nombre.toLowerCase().includes(query) || p.telefono.includes(query));
 
-      // Métricas
+      // Métricas internas
       document.getElementById('stat-prospectos-total').innerText = prospectos.length;
       document.getElementById('stat-prospectos-respondió').innerText = prospectos.filter(p => p.respondio === 'Sí').length;
       document.getElementById('stat-prospectos-volvieron').innerText = prospectos.filter(p => p.visitas === '2' || p.visitas === '3+').length;
@@ -793,7 +841,6 @@
         const row = document.createElement('tr');
         row.className = "hover:bg-slate-50/80 transition";
 
-        // Badges estéticos
         const badgeEtapa = p.etapa === 'Consolidados' 
           ? '<span class="bg-emerald-50 text-emerald-600 font-semibold px-2.5 py-1 rounded-full text-xs">● Consolidados</span>'
           : p.etapa === 'En Seguimiento'
@@ -894,10 +941,40 @@
 
       const p = prospectos.find(item => item.id === prospectoEditandoId);
       if(p) {
-        p.etapa = document.getElementById('edit-prospecto-etapa').value;
+        const etapaAnterior = p.etapa;
+        const nuevaEtapa = document.getElementById('edit-prospecto-etapa').value;
+
+        p.etapa = nuevaEtapa;
         p.respondio = document.getElementById('edit-prospecto-respondio').value;
         p.visitas = document.getElementById('edit-prospecto-visitas').value;
         p.celula = document.getElementById('edit-prospecto-celula').value;
+
+        // TRANSFERENCIA AUTOMÁTICA A MIEMBROS CUANDO PASA A CONSOLIDADOS
+        if(etapaAnterior !== 'Consolidados' && nuevaEtapa === 'Consolidados') {
+          const partesNombre = p.nombre.split(' ');
+          const nombreVal = partesNombre[0] || p.nombre;
+          const apellidoVal = partesNombre.slice(1).join(' ') || 'Visita';
+
+          const existeYa = miembros.some(m => m.telefono === p.telefono || (m.nombre === nombreVal && m.apellido === apellidoVal));
+
+          if(!existeYa) {
+            miembros.unshift({
+              nombre: nombreVal,
+              apellido: apellidoVal,
+              sexo: 'Masculino',
+              nacimiento: '',
+              categoriaEdad: 'Adultos',
+              barrio: '-',
+              telefono: p.telefono,
+              email: '-',
+              direccion: '-',
+              ingreso: new Date().toISOString().split('T')[0],
+              grupo: 'Sin grupo',
+              foto: null
+            });
+            alert(`🎉 ¡Atención! ${p.nombre} ha sido marcado como "Consolidado" y se agregó automáticamente al Módulo de Miembros.`);
+          }
+        }
 
         guardarMemoria();
         cerrarModalSeguimiento();
@@ -1240,7 +1317,7 @@
       tbody.innerHTML = '';
 
       miembros.forEach((m, idx) => {
-        const iniciales = (m.nombre[0] + m.apellido[0]).toUpperCase();
+        const iniciales = (m.nombre[0] + (m.apellido[0] || '')).toUpperCase();
         const avatarHTML = m.foto 
           ? `<img src="${m.foto}" class="w-8 h-8 rounded-full object-cover">`
           : `<div class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-xs">${iniciales}</div>`;
@@ -1304,16 +1381,6 @@
 
         row.style.display = (matchQ && matchEdad && matchGrupo) ? '' : 'none';
       });
-    }
-
-    function actualizarContadores() {
-      const elemActivos = document.getElementById('stat-miembros-activos');
-      const elemDashCnt = document.getElementById('dash-miembros-cnt');
-      const elemGruposCnt = document.getElementById('stat-grupos-activos');
-
-      if(elemActivos) elemActivos.innerText = miembros.length;
-      if(elemDashCnt) elemDashCnt.innerText = miembros.length;
-      if(elemGruposCnt) elemGruposCnt.innerText = grupos.length;
     }
 
     window.onload = function() {
