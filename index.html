@@ -523,11 +523,11 @@
       </div>
     </div>
 
-    <!-- MODAL CREAR MINISTERIO -->
+    <!-- MODAL CREAR / EDITAR MINISTERIO -->
     <div id="modal-crear-ministerio" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden flex items-center justify-center z-50 p-4">
       <div class="bg-white rounded-2xl shadow-xl max-w-md w-full p-6 space-y-5">
         <div class="flex justify-between items-center border-b border-slate-100 pb-3">
-          <h3 class="text-lg font-bold text-slate-800">Crear Nuevo Ministerio</h3>
+          <h3 class="text-lg font-bold text-slate-800" id="titulo-modal-ministerio">Crear Nuevo Ministerio</h3>
           <button onclick="cerrarModalCrearMinisterio()" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
         </div>
         <div class="space-y-4">
@@ -540,6 +540,11 @@
             <select id="select-lider-min" class="w-full border border-slate-200 rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600 text-slate-700">
               <option value="">Seleccionar líder de miembros...</option>
             </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Miembros Integrantes del Ministerio</label>
+            <p class="text-[11px] text-slate-400 mb-2">Selecciona los miembros que pertenecen a este equipo:</p>
+            <div id="contenedor-check-miembros-min" class="max-h-40 overflow-y-auto border border-slate-200 rounded-xl p-3 space-y-2 bg-slate-50/50 custom-scrollbar"></div>
           </div>
         </div>
         <div class="flex justify-end gap-2 pt-2 border-t border-slate-100">
@@ -651,8 +656,8 @@
     let miembros = JSON.parse(localStorage.getItem('miiglesia_miembros')) || [];
     let grupos = JSON.parse(localStorage.getItem('miiglesia_grupos')) || ['Líderes'];
     let ministerios = JSON.parse(localStorage.getItem('miiglesia_ministerios')) || [
-      { id: 1, nombre: "Alabanza & Adoración", lider: "Sin asignar", eventos: [] },
-      { id: 2, nombre: "Niños & Escuela Dominical", lider: "Sin asignar", eventos: [] }
+      { id: 1, nombre: "Alabanza & Adoración", lider: "Sin asignar", miembros: [], eventos: [] },
+      { id: 2, nombre: "Niños & Escuela Dominical", lider: "Sin asignar", miembros: [], eventos: [] }
     ];
     let prospectos = JSON.parse(localStorage.getItem('miiglesia_prospectos')) || [
       { id: 1, nombre: "Martin Luther", telefono: "+542983345988", fecha: "2026-08-05", etapa: "Nuevos", respondio: "Sí", visitas: "1", celula: "No" }
@@ -660,6 +665,7 @@
 
     let tempFoto = null;
     let minSeleccionadoId = null;
+    let ministerioEditandoId = null;
     let eventoEditandoId = null;
     let prospectoEditandoId = null;
 
@@ -1053,7 +1059,7 @@
       lucide.createIcons();
     }
 
-    /* MÓDULO MINISTERIOS CON EDITAR Y ELIMINAR EVENTOS */
+    /* MÓDULO MINISTERIOS CON EDITAR Y ELIMINAR EVENTOS + MIEMBROS INTEGRANTES */
     function renderMinisterios() {
       const container = document.getElementById('contenedor-ministerios-cards');
       if(!container) return;
@@ -1087,15 +1093,21 @@
           eventosHTML = `<p class="text-xs text-slate-400 italic">No hay eventos programados</p>`;
         }
 
+        const cantidadIntegrantes = m.miembros ? m.miembros.length : 0;
+
         card.innerHTML = `
           <div class="space-y-3">
             <div class="flex items-center justify-between">
               <div class="p-2.5 bg-blue-50 text-blue-600 rounded-xl"><i data-lucide="hand-heart" class="w-5 h-5"></i></div>
-              <button onclick="eliminarMinisterio(${m.id})" title="Eliminar Ministerio" class="text-slate-400 hover:text-red-600 transition"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+              <div class="flex items-center gap-1">
+                <button onclick="abrirModalCrearMinisterio(${m.id})" title="Editar Ministerio & Miembros" class="text-slate-400 hover:text-blue-600 p-1 transition"><i data-lucide="edit-3" class="w-4 h-4"></i></button>
+                <button onclick="eliminarMinisterio(${m.id})" title="Eliminar Ministerio" class="text-slate-400 hover:text-red-600 p-1 transition"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+              </div>
             </div>
             <div>
               <h3 class="font-bold text-slate-800 text-lg">${m.nombre}</h3>
               <p class="text-xs text-slate-500 mt-1"><span class="font-semibold text-slate-700">Líder:</span> ${m.lider}</p>
+              <p class="text-[11px] text-blue-600 font-medium mt-0.5">${cantidadIntegrantes} Integrante(s) asignado(s)</p>
             </div>
             <div class="pt-2 border-t border-slate-100 space-y-2">
               <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Próximos Eventos / Servicios</p>
@@ -1115,18 +1127,51 @@
       lucide.createIcons();
     }
 
-    function abrirModalCrearMinisterio() {
+    function abrirModalCrearMinisterio(minId = null) {
+      ministerioEditandoId = minId;
+      const minExistente = minId ? ministerios.find(m => m.id === minId) : null;
+
+      document.getElementById('titulo-modal-ministerio').innerText = minExistente ? "Editar Ministerio" : "Crear Nuevo Ministerio";
+
       const selectLider = document.getElementById('select-lider-min');
       selectLider.innerHTML = '<option value="Sin asignar">Sin asignar</option>';
-      miembros.forEach(m => {
-        selectLider.innerHTML += `<option value="${m.nombre} ${m.apellido}">${m.nombre} ${m.apellido}</option>`;
-      });
+
+      const contCheck = document.getElementById('contenedor-check-miembros-min');
+      contCheck.innerHTML = '';
+
+      if (minExistente) {
+        document.getElementById('input-nombre-min').value = minExistente.nombre || '';
+      } else {
+        document.getElementById('input-nombre-min').value = '';
+      }
+
+      if(miembros.length === 0) {
+        contCheck.innerHTML = `<p class="text-xs text-slate-400 italic">No hay miembros registrados en la plataforma.</p>`;
+      } else {
+        miembros.forEach(m => {
+          const nombreComp = `${m.nombre} ${m.apellido}`;
+          
+          const isLiderSelected = minExistente && minExistente.lider === nombreComp ? 'selected' : '';
+          selectLider.innerHTML += `<option value="${nombreComp}" ${isLiderSelected}>${nombreComp}</option>`;
+
+          const isChecked = minExistente && minExistente.miembros && minExistente.miembros.includes(nombreComp) ? 'checked' : '';
+
+          contCheck.innerHTML += `
+            <label class="flex items-center gap-2 text-xs text-slate-700 cursor-pointer hover:bg-slate-100 p-1 rounded-lg transition">
+              <input type="checkbox" name="miembros-min-check" value="${nombreComp}" ${isChecked} class="rounded border-slate-300 text-blue-600 focus:ring-blue-500 w-4 h-4">
+              <span>${nombreComp} (${m.grupo || 'Sin grupo'})</span>
+            </label>
+          `;
+        });
+      }
+
       document.getElementById('modal-crear-ministerio').classList.remove('hidden');
     }
 
     function cerrarModalCrearMinisterio() {
       document.getElementById('modal-crear-ministerio').classList.add('hidden');
       document.getElementById('input-nombre-min').value = '';
+      ministerioEditandoId = null;
     }
 
     function guardarNuevoMinisterio() {
@@ -1138,14 +1183,27 @@
         return;
       }
 
-      const nuevo = {
-        id: Date.now(),
-        nombre: nombre,
-        lider: lider,
-        eventos: []
-      };
+      const checkedBoxes = document.querySelectorAll('input[name="miembros-min-check"]:checked');
+      const miembrosMinisterio = Array.from(checkedBoxes).map(cb => cb.value);
 
-      ministerios.push(nuevo);
+      if (ministerioEditandoId) {
+        const min = ministerios.find(m => m.id === ministerioEditandoId);
+        if(min) {
+          min.nombre = nombre;
+          min.lider = lider;
+          min.miembros = miembrosMinisterio;
+        }
+      } else {
+        const nuevo = {
+          id: Date.now(),
+          nombre: nombre,
+          lider: lider,
+          miembros: miembrosMinisterio,
+          eventos: []
+        };
+        ministerios.push(nuevo);
+      }
+
       guardarMemoria();
       cerrarModalCrearMinisterio();
     }
@@ -1180,17 +1238,21 @@
         document.getElementById('form-evento-ministerio').reset();
       }
 
-      if(miembros.length === 0) {
-        contCheck.innerHTML = `<p class="text-xs text-slate-400 italic">No hay miembros registrados para seleccionar.</p>`;
+      // SOLAMENTE SE MUESTRAN LOS MIEMBROS INTEGRANTES DE ESTE MINISTERIO
+      const integrantesMinisterio = min.miembros || [];
+
+      if(integrantesMinisterio.length === 0) {
+        contCheck.innerHTML = `<p class="text-xs text-slate-400 italic">Este ministerio aún no tiene miembros asignados. Agrégalos editando el ministerio.</p>`;
       } else {
-        miembros.forEach(m => {
-          const nombreComp = `${m.nombre} ${m.apellido}`;
+        integrantesMinisterio.forEach(nombreComp => {
+          const datosMiembro = miembros.find(m => `${m.nombre} ${m.apellido}` === nombreComp);
+          const grupoTxt = datosMiembro ? datosMiembro.grupo : 'Sin grupo';
           const isChecked = evExistente && evExistente.servidores && evExistente.servidores.includes(nombreComp) ? 'checked' : '';
 
           contCheck.innerHTML += `
             <label class="flex items-center gap-2 text-xs text-slate-700 cursor-pointer hover:bg-slate-100 p-1 rounded-lg transition">
               <input type="checkbox" name="servidores-check" value="${nombreComp}" ${isChecked} class="rounded border-slate-300 text-blue-600 focus:ring-blue-500 w-4 h-4">
-              <span>${nombreComp} (${m.grupo || 'Sin grupo'})</span>
+              <span>${nombreComp} (${grupoTxt})</span>
             </label>
           `;
         });
@@ -1491,6 +1553,4 @@
   </script>
 </body>
 </html>
-
-
 
